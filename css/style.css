@@ -1,0 +1,75 @@
+body{
+  margin:0;
+  padding:20px;
+  background:#f4f4f4;
+  font-family:Arial;
+}
+
+.container{
+  max-width:900px;
+  margin:auto;
+}
+
+.card{
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  margin-top:20px;
+}
+
+.menu-btn{
+  width:100%;
+  padding:15px;
+  border:none;
+  background:#2ecc71;
+  color:white;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:18px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:10px;
+  margin-top:20px;
+}
+
+.item{
+  background:#f39c12;
+  color:white;
+  border-radius:10px;
+  height:130px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  cursor:pointer;
+}
+
+.item:hover{
+  transform:scale(1.03);
+}
+
+.bebidas{
+  display:flex;
+  overflow-x:auto;
+  gap:10px;
+  margin-top:20px;
+}
+
+.bebida{
+  min-width:120px;
+  height:100px;
+  background:#3498db;
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+li{
+  margin-bottom:10px;
+}
