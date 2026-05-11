@@ -1,87 +1,151 @@
 <!DOCTYPE html>
-<button onclick="window.history.back()">
-  Voltar
-</button>
+<html lang="pt-BR">
 
-    <div class="grid">
+<head>
 
-      <div class="item" onclick="adicionarVenda('Pastel Carne', 12)">
-        <h3>Pastel Carne</h3>
-        <p>R$ 12</p>
-      </div>
+    <meta charset="UTF-8">
 
-      <div class="item" onclick="adicionarVenda('Pastel Queijo', 10)">
-        <h3>Pastel Queijo</h3>
-        <p>R$ 10</p>
-      </div>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-      <div class="item" onclick="adicionarVenda('Coxinha', 8)">
-        <h3>Coxinha</h3>
-        <p>R$ 8</p>
-      </div>
+    <title>Cardápio</title>
 
-      <div class="item" onclick="adicionarVenda('Batata Frita', 15)">
-        <h3>Batata</h3>
-        <p>R$ 15</p>
-      </div>
+    <link rel="stylesheet" href="/css/style.css">
 
-      <div class="item" onclick="adicionarVenda('Kibe', 7)">
-        <h3>Kibe</h3>
-        <p>R$ 7</p>
-      </div>
+</head>
 
-      <div class="item" onclick="adicionarVenda('Empada', 9)">
-        <h3>Empada</h3>
-        <p>R$ 9</p>
-      </div>
+<body>
 
-      <div class="item" onclick="adicionarVenda('Hamburguer', 20)">
-        <h3>Hamburguer</h3>
-        <p>R$ 20</p>
-      </div>
+    <div class="container">
 
-      <div class="item" onclick="adicionarVenda('Combo', 25)">
-        <h3>Combo</h3>
-        <p>R$ 25</p>
-      </div>
+        <h1>Cardápio</h1>
 
-      <div class="item" onclick="adicionarVenda('Açai', 18)">
-        <h3>Açai</h3>
-        <p>R$ 18</p>
-      </div>
+        <a href="index.html">
+
+            <button class="menu-btn">
+                Voltar
+            </button>
+
+        </a>
+
+
+        <div class="grid">
+
+            <div class="item" onclick="adicionarVenda('Pastel Carne', 12)">
+
+                <h3>Pastel Carne</h3>
+
+                <p>R$ 12</p>
+
+            </div>
+
+
+            <div class="item" onclick="adicionarVenda('Pastel Queijo', 10)">
+
+                <h3>Pastel Queijo</h3>
+
+                <p>R$ 10</p>
+
+            </div>
+
+
+            <div class="item" onclick="adicionarVenda('Coxinha', 8)">
+
+                <h3>Coxinha</h3>
+
+                <p>R$ 8</p>
+
+            </div>
+
+
+            <div class="item" onclick="adicionarVenda('Batata Frita', 15)">
+
+                <h3>Batata</h3>
+
+                <p>R$ 15</p>
+
+            </div>
+
+
+            <div class="item" onclick="adicionarVenda('Kibe', 7)">
+
+                <h3>Kibe</h3>
+
+                <p>R$ 7</p>
+
+            </div>
+
+
+            <div class="item" onclick="adicionarVenda('Empada', 9)">
+
+                <h3>Empada</h3>
+
+                <p>R$ 9</p>
+
+            </div>
+
+
+            <div class="item" onclick="adicionarVenda('Hamburguer', 20)">
+
+                <h3>Hamburguer</h3>
+
+                <p>R$ 20</p>
+
+            </div>
+
+
+            <div class="item" onclick="adicionarVenda('Combo', 25)">
+
+                <h3>Combo</h3>
+
+                <p>R$ 25</p>
+
+            </div>
+
+
+            <div class="item" onclick="adicionarVenda('Açai', 18)">
+
+                <h3>Açai</h3>
+
+                <p>R$ 18</p>
+
+            </div>
+
+        </div>
+
+
+        <h2>Bebidas</h2>
+
+        <div class="bebidas">
+
+            <div class="bebida" onclick="adicionarVenda('Coca-Cola', 6)">
+                Coca
+            </div>
+
+            <div class="bebida" onclick="adicionarVenda('Guaraná', 5)">
+                Guaraná
+            </div>
+
+            <div class="bebida" onclick="adicionarVenda('Água', 3)">
+                Água
+            </div>
+
+            <div class="bebida" onclick="adicionarVenda('Suco', 7)">
+                Suco
+            </div>
+
+            <div class="bebida" onclick="adicionarVenda('Fanta', 6)">
+                Fanta
+            </div>
+
+        </div>
 
     </div>
 
-    <h2>Bebidas</h2>
 
-    <div class="bebidas">
+    <script src="js/storage.js"></script>
 
-      <div class="bebida" onclick="adicionarVenda('Coca-Cola', 6)">
-        Coca
-      </div>
-
-      <div class="bebida" onclick="adicionarVenda('Guaraná', 5)">
-        Guaraná
-      </div>
-
-      <div class="bebida" onclick="adicionarVenda('Água', 3)">
-        Água
-      </div>
-
-      <div class="bebida" onclick="adicionarVenda('Suco', 7)">
-        Suco
-      </div>
-
-      <div class="bebida" onclick="adicionarVenda('Fanta', 6)">
-        Fanta
-      </div>
-
-    </div>
-
-  </div>
-
-  <script src="js/storage.js"></script>
-  <script type="module" src="js/menu.js"></script>
+    <script type="module" src="js/menu.js"></script>
 
 </body>
+
 </html>

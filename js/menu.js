@@ -1,17 +1,37 @@
-function adicionarVenda(produto, valor){
+import {
+  db,
+  collection,
+  addDoc
+} from "./firebase.js";
 
-  const vendas = pegarVendas();
+
+async function adicionarVenda(produto, valor){
 
   const venda = {
-    id: crypto.randomUUID(),
+
     produto: produto,
+
     valor: valor,
+
     data: new Date().toLocaleString()
   };
 
-  vendas.push(venda);
+  try{
 
-  salvarVendas(vendas);
+    await addDoc(
+      collection(db, "vendas"),
+      venda
+    );
 
-  alert(`${produto} adicionado!`);
+    alert("Venda salva no Firestore!");
+
+  }catch(error){
+
+    console.log(error);
+
+    alert("Erro ao salvar");
+  }
 }
+
+
+window.adicionarVenda = adicionarVenda;
