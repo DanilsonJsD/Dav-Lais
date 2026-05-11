@@ -1,67 +1,80 @@
+import {
+  db,
+  collection,
+  getDocs
+} from "./firebase.js";
+
+
 const listaVendas = document.getElementById("listaVendas");
+
 const totalTexto = document.getElementById("total");
+
 
 let total = 0;
 
+
+// CARREGA VENDAS
 carregarVendas();
 
-function carregarVendas(){
 
-  const vendas = pegarVendas();
+// FUNÇÃO PRINCIPAL
+async function carregarVendas(){
 
   listaVendas.innerHTML = "";
 
   total = 0;
 
-  vendas.forEach(venda => {
+  try{
 
-    criarItemVenda(venda);
+    const querySnapshot = await getDocs(
+      collection(db, "vendas")
+    );
 
-    total += venda.valor;
-  });
+    querySnapshot.forEach((doc) => {
 
-  atualizarTotal();
+      const venda = doc.data();
+
+      criarItemVenda(venda);
+
+      total += venda.valor;
+    });
+
+    atualizarTotal();
+
+  }catch(error){
+
+    console.log(error);
+
+    alert("Erro ao carregar vendas");
+  }
 }
 
+
+// CRIA ITEM HTML
 function criarItemVenda(venda){
 
   const li = document.createElement("li");
 
   li.innerHTML = `
-    ${venda.produto} -
-    R$ ${venda.valor.toFixed(2)}
+
+    <strong>${venda.produto}</strong>
+
+    - R$ ${venda.valor.toFixed(2)}
 
     <br>
 
     <small>${venda.data}</small>
 
-    <br>
-
-    <button onclick="excluirVenda('${venda.id}')">
-      Excluir
-    </button>
+    <hr>
   `;
 
   listaVendas.appendChild(li);
 }
 
+
+// TOTAL
 function atualizarTotal(){
 
-  totalTexto.innerText = `Total: R$ ${total.toFixed(2)}`;
-}
-
-function excluirVenda(id){
-
-  let vendas = pegarVendas();
-
-  vendas = vendas.filter(venda => venda.id !== id);
-
-  salvarVendas(vendas);
-
-  carregarVendas();
-}
-
-if("serviceWorker" in navigator){
-
-  navigator.serviceWorker.register("service-worker.js");
+  totalTexto.innerText =
+  `Total: R$ ${total.toFixed(2)}`;
 }
