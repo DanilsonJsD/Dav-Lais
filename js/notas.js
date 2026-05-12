@@ -4,6 +4,7 @@ import {
     addDoc,
     getDocs,
     updateDoc,
+    deleteDoc,
     doc
 } from "./firebase.js";
 
@@ -33,7 +34,7 @@ carregarNotas();
 
 
 // SALVAR
-async function salvarNota(){
+async function salvarNota() {
 
     const nota = {
 
@@ -51,7 +52,7 @@ async function salvarNota(){
     };
 
 
-    try{
+    try {
 
         await addDoc(
             collection(db, "notas"),
@@ -64,7 +65,7 @@ async function salvarNota(){
 
         carregarNotas();
 
-    }catch(error){
+    } catch (error) {
 
         console.log(error);
 
@@ -74,12 +75,12 @@ async function salvarNota(){
 
 
 // LISTAR
-async function carregarNotas(){
+async function carregarNotas() {
 
     listaNotas.innerHTML = "";
 
 
-    try{
+    try {
 
         const querySnapshot = await getDocs(
             collection(db, "notas")
@@ -93,7 +94,7 @@ async function carregarNotas(){
             criarItemNota(nota);
         });
 
-    }catch(error){
+    } catch (error) {
 
         console.log(error);
     }
@@ -101,7 +102,7 @@ async function carregarNotas(){
 
 
 // CRIAR HTML
-function criarItemNota(nota){
+function criarItemNota(nota) {
 
     const li = document.createElement("li");
 
@@ -135,8 +136,7 @@ function criarItemNota(nota){
 
         <br><br>
 
-        ${
-            nota.status === "pendente"
+        ${nota.status === "pendente"
             ?
 
             `<button onclick="darBaixa('${nota.id}')">
@@ -149,7 +149,11 @@ function criarItemNota(nota){
                 Pago
             </button>`
         }
+            <button onclick="excluirNota('${nota.id}')">
 
+                Excluir
+
+            </button>
         <hr>
     `;
 
@@ -159,7 +163,7 @@ function criarItemNota(nota){
 
 
 // LIMPAR
-function limparCampos(){
+function limparCampos() {
 
     numeroNota.value = "";
 
@@ -168,9 +172,9 @@ function limparCampos(){
     valorNota.value = "";
 }
 
-async function darBaixa(id){
+async function darBaixa(id) {
 
-    try{
+    try {
 
         const notaRef = doc(db, "notas", id);
 
@@ -183,7 +187,7 @@ async function darBaixa(id){
 
         carregarNotas();
 
-    }catch(error){
+    } catch (error) {
 
         console.log(error);
 
@@ -191,5 +195,39 @@ async function darBaixa(id){
     }
 }
 
-
 window.darBaixa = darBaixa;
+
+
+async function excluirNota(id){
+
+    const confirmar = confirm(
+        "Deseja excluir esta nota?"
+    );
+
+
+    if(!confirmar){
+
+        return;
+    }
+
+
+    try{
+
+        await deleteDoc(
+            doc(db, "notas", id)
+        );
+
+        alert("Nota excluída!");
+
+        carregarNotas();
+
+    }catch(error){
+
+        console.log(error);
+
+        alert("Erro ao excluir");
+    }
+}
+
+
+window.excluirNota = excluirNota;

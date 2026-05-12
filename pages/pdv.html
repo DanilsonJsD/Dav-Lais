@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+    <title>PDV</title>
+
+    <link rel="stylesheet"
+    href="../css/dashboard.css">
+
+</head>
+
+<body>
+
+    <div class="container">
+
+
+        <!-- SIDEBAR -->
+
+        <aside class="sidebar">
+
+            <h2>DAV LAIS</h2>
+
+            <a href="dashboard.html">
+                🏠 Dashboard
+            </a>
+
+            <a href="pdv.html">
+                🛒 PDV
+            </a>
+
+            <a href="financeiro.html">
+                💰 Financeiro
+            </a>
+
+            <a href="estoque.html">
+                📦 Estoque
+            </a>
+
+            <a href="analises.html">
+                📊 Análises
+            </a>
+
+        </aside>
+
+
+        <!-- CONTEÚDO -->
+
+        <main class="main-content">
+
+
+            <header>
+
+                <h1>PDV</h1>
+
+                <p>
+                    Sistema de vendas 🎬
+                </p>
+
+            </header>
+
+
+            <!-- PRODUTOS -->
+
+            <section
+            id="listaProdutos"
+            class="cards">
+
+            </section>
+
+
+            <!-- CARRINHO -->
+
+            <section class="painel">
+
+                <h2>
+                    🛒 Carrinho
+                </h2>
+
+                <br>
+
+                <ul id="listaCarrinho"></ul>
+
+
+                <br>
+
+
+                <h2 id="total">
+
+                    Total: R$ 0
+
+                </h2>
+
+
+                <br>
+
+
+                <select id="pagamento">
+
+                    <option value="credito">
+                        Crédito
+                    </option>
+
+                    <option value="debito">
+                        Débito
+                    </option>
+
+                    <option value="pix">
+                        Pix
+                    </option>
+
+                    <option value="dinheiro">
+                        Dinheiro
+                    </option>
+
+                    <option value="fiado">
+                        Fiado
+                    </option>
+
+                </select>
+
+
+                <br><br>
+
+
+                <button id="btnFinalizar">
+
+                    Finalizar Venda
+
+                </button>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <script
+    type="module"
+    src="../js/pdv.js"></script>
+
+</body>
+
+</html>

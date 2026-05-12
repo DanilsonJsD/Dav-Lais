@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+    <title>Estoque</title>
+
+    <link rel="stylesheet"
+    href="../css/dashboard.css">
+
+</head>
+
+<body>
+
+    <div class="container">
+
+
+        <!-- SIDEBAR -->
+
+        <aside class="sidebar">
+
+            <h2>DAV LAIS</h2>
+
+            <a href="dashboard.html">
+                🏠 Dashboard
+            </a>
+
+            <a href="pdv.html">
+                🛒 PDV
+            </a>
+
+            <a href="estoque.html">
+                📦 Estoque
+            </a>
+
+            <a href="financeiro.html">
+                💰 Financeiro
+            </a>
+
+        </aside>
+
+
+        <!-- CONTEÚDO -->
+
+        <main class="main-content">
+
+            <header>
+
+                <h1>
+                    Estoque
+                </h1>
+
+                <p>
+                    Cadastro de produtos
+                </p>
+
+            </header>
+
+
+            <!-- FORM -->
+
+            <section class="painel">
+
+                <h2>
+                    Novo Produto
+                </h2>
+
+                <br>
+
+
+                <input
+                type="text"
+                id="nomeProduto"
+                placeholder="Nome do produto">
+
+
+                <br><br>
+
+
+                <input
+                type="number"
+                id="valorProduto"
+                placeholder="Valor">
+
+
+                <br><br>
+
+
+                <input
+                type="text"
+                id="categoriaProduto"
+                placeholder="Categoria">
+
+
+                <br><br>
+
+
+                <input
+                type="text"
+                id="imagemProduto"
+                placeholder="URL da imagem">
+
+
+                <br><br>
+
+
+                <button id="btnSalvarProduto">
+
+                    Salvar Produto
+
+                </button>
+
+            </section>
+
+
+            <!-- LISTA -->
+
+            <section class="painel">
+
+                <h2>
+                    Produtos
+                </h2>
+
+                <br>
+
+                <div id="listaProdutos"
+                class="cards">
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <script type="module"
+    src="../js/estoque.js"></script>
+
+</body>
+
+</html>
