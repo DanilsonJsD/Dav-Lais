@@ -1,29 +1,77 @@
-const CACHE_NAME = "dav-cache-v1";
+const CACHE_NAME =
+  "dav-lais-v1";
+
 
 const urlsToCache = [
+
   "/",
+
   "/index.html",
-  "/menu.html",
-  "/css/style.css",
-  "/js/app.js",
-  "/js/menu.js",
-  "/js/storage.js"
+
+  "/css/login.css",
+
+  "/css/dashboard.css",
+
+  "/js/auth.js",
+
+  "/js/dashboard.js",
+
+  "/js/estoque.js",
+
+  "/js/firebase.js",
+
+  "/js/pdv.js",
+
+  "/js/storage.js",
+
+  "/pages/dashboard.html",
+
+  "/pages/pdv.html",
+
+  "/pages/estoque.html",
+
+  "/pages/financeiro.html",
+
+  "/pages/analises.html"
 ];
 
-self.addEventListener("install", event => {
 
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
-  );
-});
+// INSTALA CACHE
+self.addEventListener(
+  "install",
+  (event) => {
 
-self.addEventListener("fetch", event => {
+    event.waitUntil(
 
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        return response || fetch(event.request);
-      })
-  );
-});
+      caches.open(CACHE_NAME)
+
+        .then((cache) => {
+
+          return cache.addAll(
+            urlsToCache
+          );
+        })
+    );
+  }
+);
+
+
+// RESPONDE CACHE
+self.addEventListener(
+  "fetch",
+  (event) => {
+
+    event.respondWith(
+
+      caches.match(event.request)
+
+        .then((response) => {
+
+          return (
+            response ||
+            fetch(event.request)
+          );
+        })
+    );
+  }
+);
