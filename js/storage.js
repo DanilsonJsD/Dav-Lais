@@ -1,15 +1,52 @@
-function pegarVendas(){
+// =========================
+// SALVAR OFFLINE
+// =========================
 
-  const vendas = localStorage.getItem("vendas");
+export function salvarVendaOffline(venda){
 
-  if(vendas){
-    return JSON.parse(vendas);
-  }
+    let vendasOffline =
+    JSON.parse(
+        localStorage.getItem(
+            "vendasOffline"
+        )
+    ) || [];
 
-  return [];
+
+    vendasOffline.push(venda);
+
+
+    localStorage.setItem(
+
+        "vendasOffline",
+
+        JSON.stringify(vendasOffline)
+    );
 }
 
-function salvarVendas(vendas){
 
-  localStorage.setItem("vendas", JSON.stringify(vendas));
+// =========================
+// PEGAR VENDAS OFFLINE
+// =========================
+
+export function obterVendasOffline(){
+
+    return JSON.parse(
+
+        localStorage.getItem(
+            "vendasOffline"
+        )
+
+    ) || [];
+}
+
+
+// =========================
+// LIMPAR OFFLINE
+// =========================
+
+export function limparVendasOffline(){
+
+    localStorage.removeItem(
+        "vendasOffline"
+    );
 }

@@ -23,7 +23,7 @@ document.getElementById("totalProdutos");
 
 
 // =========================
-// CARREGAR DASHBOARD
+// DASHBOARD
 // =========================
 
 async function carregarDashboard(){
@@ -58,26 +58,33 @@ async function carregarVendas(){
         const venda = doc.data();
 
 
-        total += venda.total;
+        total += Number(venda.total) || 0;
 
         pedidos++;
 
 
-        venda.itens.forEach((item) => {
+        if(venda.itens){
 
-            if(
-                produtosVendidos[item.produto]
-            ){
+            venda.itens.forEach((item) => {
 
-                produtosVendidos[item.produto] +=
-                item.quantidade;
+                const quantidade =
+                Number(item.quantidade) || 1;
 
-            }else{
 
-                produtosVendidos[item.produto] =
-                item.quantidade;
-            }
-        });
+                if(
+                    produtosVendidos[item.produto]
+                ){
+
+                    produtosVendidos[item.produto] +=
+                    quantidade;
+
+                }else{
+
+                    produtosVendidos[item.produto] =
+                    quantidade;
+                }
+            });
+        }
     });
 
 
