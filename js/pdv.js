@@ -1,6 +1,10 @@
 import {
 
-    salvarVendaOffline
+    salvarVendaOffline,
+
+    salvarProdutosOffline,
+
+    obterProdutosOffline
 
 } from "./storage.js";
 
@@ -42,25 +46,49 @@ let total = 0;
 // CARREGAR PRODUTOS
 // =========================
 
-async function carregarProdutos() {
+async function carregarProdutos(){
 
     listaProdutos.innerHTML = "";
 
 
-    const querySnapshot =
+    // ONLINE
+    if(navigator.onLine){
+
+        const querySnapshot =
         await getDocs(
             collection(db, "produtos")
         );
 
 
-    querySnapshot.forEach((doc) => {
+        let produtos = [];
 
-        const produto = doc.data();
 
-        criarCardProduto(produto);
-    });
+        querySnapshot.forEach((doc) => {
+
+            const produto = doc.data();
+
+            produtos.push(produto);
+
+            criarCardProduto(produto);
+        });
+
+
+        salvarProdutosOffline(produtos);
+
+    }else{
+
+        // OFFLINE
+
+        const produtosOffline =
+        obterProdutosOffline();
+
+
+        produtosOffline.forEach((produto) => {
+
+            criarCardProduto(produto);
+        });
+    }
 }
-
 
 // =========================
 // CRIAR CARD PRODUTO

@@ -50,3 +50,31 @@ export function limparVendasOffline(){
         "vendasOffline"
     );
 }
+
+// =========================
+// PRODUTOS OFFLINE
+// =========================
+
+export function salvarProdutosOffline(
+    produtos
+){
+
+    localStorage.setItem(
+
+        "produtosOffline",
+
+        JSON.stringify(produtos)
+    );
+}
+
+
+export function obterProdutosOffline(){
+
+    return JSON.parse(
+
+        localStorage.getItem(
+            "produtosOffline"
+        )
+
+    ) || [];
+}
