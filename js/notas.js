@@ -2,7 +2,9 @@ import {
     db,
     collection,
     addDoc,
-    getDocs
+    getDocs,
+    updateDoc,
+    doc
 } from "./firebase.js";
 
 
@@ -84,10 +86,10 @@ async function carregarNotas(){
         );
 
 
-        querySnapshot.forEach((doc) => {
+        querySnapshot.forEach((documento) => {
 
-            const nota = doc.data();
-
+            const nota = documento.data();
+            nota.id = documento.id;
             criarItemNota(nota);
         });
 
@@ -131,6 +133,23 @@ function criarItemNota(nota){
 
         <small>${nota.data}</small>
 
+        <br><br>
+
+        ${
+            nota.status === "pendente"
+            ?
+
+            `<button onclick="darBaixa('${nota.id}')">
+                Dar Baixa
+            </button>`
+
+            :
+
+            `<button disabled>
+                Pago
+            </button>`
+        }
+
         <hr>
     `;
 
@@ -148,3 +167,29 @@ function limparCampos(){
 
     valorNota.value = "";
 }
+
+async function darBaixa(id){
+
+    try{
+
+        const notaRef = doc(db, "notas", id);
+
+        await updateDoc(notaRef, {
+
+            status: "pago"
+        });
+
+        alert("Nota baixada!");
+
+        carregarNotas();
+
+    }catch(error){
+
+        console.log(error);
+
+        alert("Erro ao dar baixa");
+    }
+}
+
+
+window.darBaixa = darBaixa;
