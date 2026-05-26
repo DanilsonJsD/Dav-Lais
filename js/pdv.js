@@ -104,7 +104,7 @@ async function carregarProdutos(){
 
 
 // =========================
-// CARREGAR OFFLINE
+// CARREGAR PRODUTOS OFFLINE
 // =========================
 
 function carregarProdutosOffline(){
@@ -337,56 +337,42 @@ async function finalizarVenda(){
     };
 
 
-    // =========================
-    // OFFLINE
-    // =========================
+    try{
 
-    if(!navigator.onLine){
+        // TIMEOUT
+        const timeoutPromise =
+        new Promise((_, reject) =>
 
-        salvarVendaOffline(venda);
+            setTimeout(() =>
 
+                reject(
+                    new Error("Sem conexão")
+                ),
 
-        alert(
-
-            "Venda offline realizada.\n\nAo conectar a internet a venda será registrada automaticamente."
-
+            3000)
         );
 
 
-        // LIMPA VENDA
-        carrinho = [];
-
-        atualizarCarrinho();
-
-
-        // LIBERA BOTÃO
-        btnFinalizar.disabled = false;
-
-        return;
-    }
-
-
-    // =========================
-    // ONLINE
-    // =========================
-
-    try{
-
-        await addDoc(
+        // FIREBASE
+        const firebasePromise =
+        addDoc(
             collection(db, "vendas"),
             venda
         );
 
 
+        // CORRIDA
+        await Promise.race([
+
+            firebasePromise,
+
+            timeoutPromise
+        ]);
+
+
         alert(
             "Venda finalizada!"
         );
-
-
-        // LIMPA VENDA
-        carrinho = [];
-
-        atualizarCarrinho();
 
     }catch(error){
 
@@ -398,16 +384,16 @@ async function finalizarVenda(){
 
         alert(
 
-            "Erro de conexão.\n\nVenda salva offline e será sincronizada automaticamente."
+            "Venda offline realizada.\n\nAo conectar a internet a venda será registrada automaticamente."
 
         );
-
-
-        // LIMPA VENDA
-        carrinho = [];
-
-        atualizarCarrinho();
     }
+
+
+    // LIMPA VENDA
+    carrinho = [];
+
+    atualizarCarrinho();
 
 
     // LIBERA BOTÃO
