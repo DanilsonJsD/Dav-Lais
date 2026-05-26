@@ -340,7 +340,7 @@ async function finalizarVenda(){
 
     const venda = {
 
-        itens: carrinho,
+        itens: [...carrinho],
 
         total: total,
 
@@ -358,48 +358,41 @@ async function finalizarVenda(){
     };
 
 
-    const online =
-    await temInternet();
+    // =========================
+    // LIMPA TELA IMEDIATAMENTE
+    // =========================
+
+    carrinho = [];
+
+    atualizarCarrinho();
 
 
     // =========================
-    // OFFLINE
-    // =========================
-
-    if(!online){
-
-        salvarVendaOffline(venda);
-
-
-        alert(
-
-            "Venda offline realizada.\n\nAo conectar a internet a venda será registrada automaticamente."
-
-        );
-
-
-        carrinho = [];
-
-        atualizarCarrinho();
-
-        btnFinalizar.disabled = false;
-
-        return;
-    }
-
-
-    // =========================
-    // ONLINE
+    // TENTA FIREBASE EM BACKGROUND
     // =========================
 
     try{
 
-        await addDoc(
+        addDoc(
 
             collection(db, "vendas"),
 
             venda
-        );
+
+        ).then(() => {
+
+            console.log(
+                "Venda online salva"
+            );
+
+        }).catch(() => {
+
+            salvarVendaOffline(venda);
+
+            console.log(
+                "Venda salva offline"
+            );
+        });
 
 
         alert(
@@ -408,23 +401,15 @@ async function finalizarVenda(){
 
     }catch(error){
 
-        console.log(error);
-
-
         salvarVendaOffline(venda);
-
 
         alert(
 
-            "Erro conexão.\n\nVenda salva offline."
+            "Venda offline realizada.\n\nAo conectar a internet a venda será registrada automaticamente."
 
         );
     }
 
-
-    carrinho = [];
-
-    atualizarCarrinho();
 
     btnFinalizar.disabled = false;
 }
