@@ -23,21 +23,29 @@ import {
 } from "./firebase.js";
 
 
+// =========================
+// ELEMENTOS
+// =========================
+
 const listaProdutos =
-    document.getElementById("listaProdutos");
+document.getElementById("listaProdutos");
 
 const listaCarrinho =
-    document.getElementById("listaCarrinho");
+document.getElementById("listaCarrinho");
 
 const totalTexto =
-    document.getElementById("total");
+document.getElementById("total");
 
 const pagamento =
-    document.getElementById("pagamento");
+document.getElementById("pagamento");
 
 const btnFinalizar =
-    document.getElementById("btnFinalizar");
+document.getElementById("btnFinalizar");
 
+
+// =========================
+// VARIÁVEIS
+// =========================
 
 let carrinho = [];
 
@@ -94,8 +102,9 @@ async function carregarProdutos(){
     }
 }
 
+
 // =========================
-// CARREGAR PRODUTOS OFFLINE
+// CARREGAR OFFLINE
 // =========================
 
 function carregarProdutosOffline(){
@@ -113,14 +122,15 @@ function carregarProdutosOffline(){
     });
 }
 
+
 // =========================
-// CRIAR CARD PRODUTO
+// CRIAR CARD
 // =========================
 
-function criarCardProduto(produto) {
+function criarCardProduto(produto){
 
     const card =
-        document.createElement("div");
+    document.createElement("div");
 
 
     card.classList.add("card");
@@ -145,6 +155,8 @@ function criarCardProduto(produto) {
             ${produto.categoria}
         </small>
 
+        <br><br>
+
         <button
         onclick="adicionarCarrinho(
             '${produto.nome}',
@@ -154,7 +166,6 @@ function criarCardProduto(produto) {
             Adicionar
 
         </button>
-
     `;
 
 
@@ -169,19 +180,19 @@ function criarCardProduto(produto) {
 function adicionarCarrinho(
     produto,
     valor
-) {
+){
 
     const itemExistente =
-        carrinho.find((item) =>
-            item.produto === produto
-        );
+    carrinho.find((item) =>
+        item.produto === produto
+    );
 
 
-    if (itemExistente) {
+    if(itemExistente){
 
         itemExistente.quantidade++;
 
-    } else {
+    }else{
 
         carrinho.push({
 
@@ -199,10 +210,10 @@ function adicionarCarrinho(
 
 
 // =========================
-// ATUALIZA CARRINHO
+// ATUALIZAR CARRINHO
 // =========================
 
-function atualizarCarrinho() {
+function atualizarCarrinho(){
 
     listaCarrinho.innerHTML = "";
 
@@ -212,14 +223,14 @@ function atualizarCarrinho() {
     carrinho.forEach((item, index) => {
 
         const subtotal =
-            item.valor * item.quantidade;
+        item.valor * item.quantidade;
 
 
         total += subtotal;
 
 
         const li =
-            document.createElement("li");
+        document.createElement("li");
 
 
         li.innerHTML = `
@@ -256,7 +267,7 @@ function atualizarCarrinho() {
 
 
     totalTexto.innerText =
-        `Total: R$ ${total}`;
+    `Total: R$ ${total}`;
 }
 
 
@@ -264,15 +275,15 @@ function atualizarCarrinho() {
 // REMOVER ITEM
 // =========================
 
-function removerItem(index) {
+function removerItem(index){
 
-    if (
+    if(
         carrinho[index].quantidade > 1
-    ) {
+    ){
 
         carrinho[index].quantidade--;
 
-    } else {
+    }else{
 
         carrinho.splice(index, 1);
     }
@@ -292,9 +303,9 @@ btnFinalizar.addEventListener(
 );
 
 
-async function finalizarVenda() {
+async function finalizarVenda(){
 
-    if (carrinho.length <= 0) {
+    if(carrinho.length <= 0){
 
         alert("Carrinho vazio");
 
@@ -311,33 +322,58 @@ async function finalizarVenda() {
         pagamento: pagamento.value,
 
         status:
-            pagamento.value === "fiado"
-                ?
-                "pendente"
-                :
-                "pago",
+        pagamento.value === "fiado"
+        ?
+        "pendente"
+        :
+        "pago",
 
         data:
-            new Date().toLocaleString()
+        new Date().toLocaleString()
     };
 
 
-    try {
+    // =========================
+    // OFFLINE
+    // =========================
+
+    if(!navigator.onLine){
+
+        salvarVendaOffline(venda);
+
+        alert(
+            "Sem internet.\nVenda salva offline."
+        );
+
+        carrinho = [];
+
+        atualizarCarrinho();
+
+        return;
+    }
+
+
+    // =========================
+    // ONLINE
+    // =========================
+
+    try{
 
         await addDoc(
             collection(db, "vendas"),
             venda
         );
 
-        alert("Venda finalizada!");
+        alert(
+            "Venda finalizada!"
+        );
 
 
         carrinho = [];
 
-
         atualizarCarrinho();
 
-    } catch (error) {
+    }catch(error){
 
         console.log(error);
 
@@ -347,22 +383,11 @@ async function finalizarVenda() {
 
         alert(
 
-            "Sem internet.\nVenda salva offline."
+            "Erro conexão.\nVenda salva offline."
 
         );
     }
 }
-
-
-// =========================
-// GLOBAL
-// =========================
-
-window.adicionarCarrinho =
-    adicionarCarrinho;
-
-window.removerItem =
-    removerItem;
 
 
 // =========================
@@ -389,6 +414,18 @@ window.addEventListener(
         );
     }
 );
+
+
+// =========================
+// GLOBAL
+// =========================
+
+window.adicionarCarrinho =
+adicionarCarrinho;
+
+window.removerItem =
+removerItem;
+
 
 // =========================
 // INICIAR
