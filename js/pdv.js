@@ -313,6 +313,10 @@ async function finalizarVenda(){
     }
 
 
+    // BLOQUEIA BOTÃO
+    btnFinalizar.disabled = true;
+
+
     const venda = {
 
         itens: carrinho,
@@ -341,13 +345,22 @@ async function finalizarVenda(){
 
         salvarVendaOffline(venda);
 
+
         alert(
-            "Sem internet.\nVenda salva offline."
+
+            "Venda offline realizada.\n\nAo conectar a internet a venda será registrada automaticamente."
+
         );
 
+
+        // LIMPA VENDA
         carrinho = [];
 
         atualizarCarrinho();
+
+
+        // LIBERA BOTÃO
+        btnFinalizar.disabled = false;
 
         return;
     }
@@ -364,11 +377,13 @@ async function finalizarVenda(){
             venda
         );
 
+
         alert(
             "Venda finalizada!"
         );
 
 
+        // LIMPA VENDA
         carrinho = [];
 
         atualizarCarrinho();
@@ -383,10 +398,20 @@ async function finalizarVenda(){
 
         alert(
 
-            "Erro conexão.\nVenda salva offline."
+            "Erro de conexão.\n\nVenda salva offline e será sincronizada automaticamente."
 
         );
+
+
+        // LIMPA VENDA
+        carrinho = [];
+
+        atualizarCarrinho();
     }
+
+
+    // LIBERA BOTÃO
+    btnFinalizar.disabled = false;
 }
 
 
