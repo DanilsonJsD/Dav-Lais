@@ -368,44 +368,67 @@ async function finalizarVenda(){
 
 
     // =========================
-    // TENTA FIREBASE EM BACKGROUND
+    // VERIFICA INTERNET ANTES
     // =========================
 
-    try{
+    const online = await temInternet();
 
-        addDoc(
+    console.log("Tem internet?", online);
 
-            collection(db, "vendas"),
 
-            venda
+    // =========================
+    // SE TEM INTERNET, TENTA SALVAR
+    // =========================
 
-        ).then(() => {
+    if(online){
 
-            console.log(
-                "Venda online salva"
+        try{
+
+            await addDoc(
+
+                collection(db, "vendas"),
+
+                venda
             );
 
-        }).catch(() => {
+            console.log("✅ Venda online salva");
 
+            alert(
+                "✅ Venda finalizada e sincronizada!"
+            );
+
+        }catch(error){
+
+            console.error(
+                "❌ Erro ao salvar online:",
+                error
+            );
+
+            // Se falhar, salva offline
             salvarVendaOffline(venda);
 
-            console.log(
-                "Venda salva offline"
+            alert(
+
+                "⚠️ Venda salva offline.\n\nAo conectar a internet a venda será sincronizada automaticamente."
+
             );
-        });
+        }
 
+    }else{
 
-        alert(
-            "Venda finalizada!"
-        );
-
-    }catch(error){
+        // =========================
+        // SEM INTERNET, SALVA OFFLINE
+        // =========================
 
         salvarVendaOffline(venda);
 
+        console.log(
+            "📴 Venda salva offline (sem internet)"
+        );
+
         alert(
 
-            "Venda offline realizada.\n\nAo conectar a internet a venda será registrada automaticamente."
+            "📴 Venda realizada em modo offline!\n\nQuando a internet retornar, a venda será sincronizada automaticamente."
 
         );
     }
@@ -425,18 +448,47 @@ window.addEventListener(
 
     async () => {
 
-        await sincronizarVendas(
-
-            db,
-
-            collection,
-
-            addDoc
+        console.log(
+            "🌐 Conexão de internet restaurada!"
         );
 
-        alert(
-            "Vendas sincronizadas!"
-        );
+        try{
+
+            const resultado =
+            await sincronizarVendas(
+
+                db,
+
+                collection,
+
+                addDoc
+            );
+
+
+            if(resultado){
+
+                alert(
+                    "✅ Vendas offline sincronizadas com sucesso!"
+                );
+
+            }else{
+
+                alert(
+                    "ℹ️ Nenhuma venda para sincronizar."
+                );
+            }
+
+        }catch(error){
+
+            console.error(
+                "Erro ao sincronizar:",
+                error
+            );
+
+            alert(
+                "❌ Erro ao sincronizar. Tente novamente."
+            );
+        }
     }
 );
 
