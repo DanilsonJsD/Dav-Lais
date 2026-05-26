@@ -4,7 +4,9 @@ import {
 
     salvarProdutosOffline,
 
-    obterProdutosOffline
+    obterProdutosOffline,
+
+    sincronizarVendas
 
 } from "./storage.js";
 
@@ -341,6 +343,31 @@ window.adicionarCarrinho =
 window.removerItem =
     removerItem;
 
+
+// =========================
+// INTERNET VOLTOU
+// =========================
+
+window.addEventListener(
+
+    "online",
+
+    async () => {
+
+        await sincronizarVendas(
+
+            db,
+
+            collection,
+
+            addDoc
+        );
+
+        alert(
+            "Vendas sincronizadas!"
+        );
+    }
+);
 
 // =========================
 // INICIAR

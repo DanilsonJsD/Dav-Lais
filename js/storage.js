@@ -78,3 +78,55 @@ export function obterProdutosOffline(){
 
     ) || [];
 }
+
+// =========================
+// SINCRONIZAÇÃO
+// =========================
+
+export async function sincronizarVendas(
+
+    db,
+
+    collection,
+
+    addDoc
+
+){
+
+    const vendasOffline =
+
+    JSON.parse(
+
+        localStorage.getItem(
+            "vendasOffline"
+        )
+
+    ) || [];
+
+
+    if(vendasOffline.length <= 0){
+
+        return;
+    }
+
+
+    for(const venda of vendasOffline){
+
+        await addDoc(
+
+            collection(db, "vendas"),
+
+            venda
+        );
+    }
+
+
+    localStorage.removeItem(
+        "vendasOffline"
+    );
+
+
+    console.log(
+        "Vendas sincronizadas"
+    );
+}
