@@ -53,43 +53,64 @@ async function carregarProdutos(){
     listaProdutos.innerHTML = "";
 
 
-    // ONLINE
-    if(navigator.onLine){
+    try{
 
-        const querySnapshot =
-        await getDocs(
-            collection(db, "produtos")
+        // ONLINE
+        if(navigator.onLine){
+
+            const querySnapshot =
+            await getDocs(
+                collection(db, "produtos")
+            );
+
+
+            let produtos = [];
+
+
+            querySnapshot.forEach((doc) => {
+
+                const produto = doc.data();
+
+                produtos.push(produto);
+
+                criarCardProduto(produto);
+            });
+
+
+            salvarProdutosOffline(produtos);
+
+        }else{
+
+            carregarProdutosOffline();
+        }
+
+    }catch(error){
+
+        console.log(
+            "Erro online, carregando offline"
         );
 
-
-        let produtos = [];
-
-
-        querySnapshot.forEach((doc) => {
-
-            const produto = doc.data();
-
-            produtos.push(produto);
-
-            criarCardProduto(produto);
-        });
-
-
-        salvarProdutosOffline(produtos);
-
-    }else{
-
-        // OFFLINE
-
-        const produtosOffline =
-        obterProdutosOffline();
-
-
-        produtosOffline.forEach((produto) => {
-
-            criarCardProduto(produto);
-        });
+        carregarProdutosOffline();
     }
+}
+
+// =========================
+// CARREGAR PRODUTOS OFFLINE
+// =========================
+
+function carregarProdutosOffline(){
+
+    listaProdutos.innerHTML = "";
+
+
+    const produtosOffline =
+    obterProdutosOffline();
+
+
+    produtosOffline.forEach((produto) => {
+
+        criarCardProduto(produto);
+    });
 }
 
 // =========================
