@@ -1,78 +1,48 @@
 // =========================
-// SALVAR OFFLINE
+// SALVAR VENDAS
 // =========================
 
 export function salvarVendaOffline(venda){
 
-    try{
+    let vendas = JSON.parse(
 
-        let vendasOffline =
-        JSON.parse(
-            localStorage.getItem(
-                "vendasOffline"
-            )
-        ) || [];
+        localStorage.getItem(
+            "vendasOffline"
+        )
 
-
-        vendasOffline.push(venda);
+    ) || [];
 
 
-        localStorage.setItem(
+    vendas.push(venda);
 
-            "vendasOffline",
 
-            JSON.stringify(vendasOffline)
-        );
+    localStorage.setItem(
 
-        console.log(
-            "✅ Venda salva offline:",
-            venda
-        );
+        "vendasOffline",
 
-        return true;
-
-    }catch(error){
-
-        console.error(
-            "❌ Erro ao salvar offline:",
-            error
-        );
-
-        return false;
-    }
+        JSON.stringify(vendas)
+    );
 }
 
 
 // =========================
-// PEGAR VENDAS OFFLINE
+// OBTER VENDAS
 // =========================
 
 export function obterVendasOffline(){
 
-    try{
+    return JSON.parse(
 
-        return JSON.parse(
+        localStorage.getItem(
+            "vendasOffline"
+        )
 
-            localStorage.getItem(
-                "vendasOffline"
-            )
-
-        ) || [];
-
-    }catch(error){
-
-        console.error(
-            "Erro ao obter vendas offline:",
-            error
-        );
-
-        return [];
-    }
+    ) || [];
 }
 
 
 // =========================
-// LIMPAR OFFLINE
+// LIMPAR VENDAS
 // =========================
 
 export function limparVendasOffline(){
@@ -82,13 +52,65 @@ export function limparVendasOffline(){
     );
 }
 
+
 // =========================
-// PRODUTOS OFFLINE
+// SINCRONIZAR
 // =========================
 
-export function salvarProdutosOffline(
-    produtos
+export async function sincronizarVendas(
+
+    db,
+
+    collection,
+
+    addDoc
+
 ){
+
+    const vendas =
+    obterVendasOffline();
+
+
+    if(vendas.length <= 0){
+
+        return;
+    }
+
+
+    for(const venda of vendas){
+
+        try{
+
+            await addDoc(
+
+                collection(db, "vendas"),
+
+                venda
+            );
+
+        }catch(error){
+
+            console.log(
+
+                "Erro sincronizar",
+
+                error
+            );
+
+            return;
+        }
+    }
+
+
+    limparVendasOffline();
+}
+
+
+// =========================
+// PRODUTOS
+// =========================
+
+export function salvarProdutosOffline(produtos){
 
     localStorage.setItem(
 
@@ -108,107 +130,4 @@ export function obterProdutosOffline(){
         )
 
     ) || [];
-}
-
-// =========================
-// SINCRONIZAÇÃO
-// =========================
-
-export async function sincronizarVendas(
-
-    db,
-
-    collection,
-
-    addDoc
-
-){
-
-    try{
-
-        const vendasOffline =
-
-        JSON.parse(
-
-            localStorage.getItem(
-                "vendasOffline"
-            )
-
-        ) || [];
-
-
-        if(vendasOffline.length <= 0){
-
-            console.log(
-                "ℹ️ Nenhuma venda para sincronizar"
-            );
-
-            return true;
-        }
-
-
-        console.log(
-            "🔄 Sincronizando",
-            vendasOffline.length,
-            "vendas..."
-        );
-
-
-        let sincronizadas = 0;
-        let erros = 0;
-
-
-        for(const venda of vendasOffline){
-
-            try{
-
-                await addDoc(
-
-                    collection(db, "vendas"),
-
-                    venda
-                );
-
-                sincronizadas++;
-
-                console.log(
-                    "✅ Venda sincronizada"
-                );
-
-            }catch(error){
-
-                erros++;
-
-                console.error(
-                    "❌ Erro ao sincronizar venda:",
-                    error
-                );
-            }
-        }
-
-
-        if(sincronizadas > 0){
-
-            localStorage.removeItem(
-                "vendasOffline"
-            );
-
-            console.log(
-                `✅ Sincronização concluída: 
-                ${sincronizadas} sucesso, 
-                ${erros} erros`
-            );
-        }
-
-        return sincronizadas > 0;
-
-    }catch(error){
-
-        console.error(
-            "❌ Erro em sincronizarVendas:",
-            error
-        );
-
-        return false;
-    }
 }

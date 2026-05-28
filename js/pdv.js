@@ -50,48 +50,71 @@ let carrinho = [];
 
 let total = 0;
 
-let modoOffline = false;
+
+// =========================
+// STATUS INTERNET
+// =========================
+
+function atualizarStatusInternet(){
+
+    if(navigator.onLine){
+
+        statusInternet.innerHTML =
+        "🟢 ONLINE";
+
+        statusInternet.style.background =
+        "green";
+
+    }else{
+
+        statusInternet.innerHTML =
+        "🔴 OFFLINE";
+
+        statusInternet.style.background =
+        "red";
+    }
+}
+
+
+window.addEventListener(
+
+    "online",
+
+    async () => {
+
+        atualizarStatusInternet();
+
+
+        await sincronizarVendas(
+
+            db,
+
+            collection,
+
+            addDoc
+        );
+
+
+        alert(
+            "Vendas sincronizadas!"
+        );
+    }
+);
+
+
+window.addEventListener(
+
+    "offline",
+
+    () => {
+
+        atualizarStatusInternet();
+    }
+);
 
 
 // =========================
-// MONITOR INTERNET
-// =========================
-
-window.addEventListener("offline", () => {
-
-    modoOffline = true;
-
-    statusInternet.style.display =
-    "block";
-});
-
-
-window.addEventListener("online", async () => {
-
-    modoOffline = false;
-
-    statusInternet.style.display =
-    "none";
-
-
-    await sincronizarVendas(
-
-        db,
-
-        collection,
-
-        addDoc
-    );
-
-
-    alert(
-        "Vendas sincronizadas!"
-    );
-});
-
-
-// =========================
-// CARREGAR PRODUTOS
+// PRODUTOS
 // =========================
 
 async function carregarProdutos(){
@@ -131,10 +154,6 @@ async function carregarProdutos(){
 }
 
 
-// =========================
-// OFFLINE PRODUTOS
-// =========================
-
 function carregarProdutosOffline(){
 
     listaProdutos.innerHTML = "";
@@ -168,7 +187,6 @@ function criarCardProduto(produto){
 
         <img
         src="${produto.imagem}"
-
         onerror="this.style.display='none'">
 
         <h3>
@@ -206,12 +224,15 @@ function criarCardProduto(produto){
 // =========================
 
 function adicionarCarrinho(
+
     produto,
+
     valor
 ){
 
     const itemExistente =
     carrinho.find((item) =>
+
         item.produto === produto
     );
 
@@ -290,7 +311,7 @@ function atualizarCarrinho(){
     });
 
 
-    totalTexto.innerText =
+    totalTexto.innerHTML =
     `Total: R$ ${total}`;
 }
 
@@ -355,71 +376,45 @@ async function finalizarVenda(){
     };
 
 
-    // =========================
-    // OFFLINE
-    // =========================
-
-    if(modoOffline){
-
-        salvarVendaOffline(venda);
+    // SALVA LOCAL PRIMEIRO
+    salvarVendaOffline(venda);
 
 
-        carrinho = [];
+    // LIMPA TELA
+    carrinho = [];
 
-        atualizarCarrinho();
-
-
-        alert(
-
-            "Venda salva offline!\n\nQuando a internet voltar ela será sincronizada."
-
-        );
-
-        return;
-    }
+    atualizarCarrinho();
 
 
-    // =========================
-    // ONLINE
-    // =========================
+    // ALERTA
+    alert(
 
-    try{
-
-        await addDoc(
-
-            collection(db, "vendas"),
-
-            venda
-        );
+        navigator.onLine
+        ?
+        "Venda finalizada!"
+        :
+        "Venda salva offline!"
+    );
 
 
-        carrinho = [];
+    // TENTA SINCRONIZAR
+    if(navigator.onLine){
 
-        atualizarCarrinho();
+        try{
 
+            await sincronizarVendas(
 
-        alert(
-            "Venda finalizada!"
-        );
+                db,
 
-    }catch(error){
+                collection,
 
-        console.log(error);
+                addDoc
+            );
 
+        }catch(error){
 
-        salvarVendaOffline(venda);
-
-
-        carrinho = [];
-
-        atualizarCarrinho();
-
-
-        alert(
-
-            "Erro conexão.\n\nVenda salva offline."
-
-        );
+            console.log(error);
+        }
     }
 }
 
@@ -438,5 +433,7 @@ removerItem;
 // =========================
 // INICIAR
 // =========================
+
+atualizarStatusInternet();
 
 carregarProdutos();

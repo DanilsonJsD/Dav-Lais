@@ -308,3 +308,24 @@ header h1{
 
     display: none;
 }
+
+#statusInternet{
+
+    position: fixed;
+
+    top: 20px;
+
+    right: 20px;
+
+    padding: 10px 20px;
+
+    border-radius: 10px;
+
+    color: white;
+
+    font-weight: bold;
+
+    z-index: 9999;
+
+    background: green;
+}
