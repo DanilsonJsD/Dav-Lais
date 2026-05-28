@@ -6,5 +6,5 @@ import {
 
 
 verificarPermissao(
-    "analises"
+    "importacao"
 );

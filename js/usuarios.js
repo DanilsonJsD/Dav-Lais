@@ -1,5 +1,16 @@
 import {
 
+    verificarPermissao
+
+} from "./authGuard.js";
+
+
+verificarPermissao(
+    "usuarios"
+);
+
+import {
+
     db,
 
     collection,
