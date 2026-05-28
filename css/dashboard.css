@@ -522,3 +522,37 @@ RESPONSIVO
         font-size: 28px;
     }
 }
+
+/* =========================
+USUÁRIOS
+========================= */
+
+.permissoes{
+
+    display: grid;
+
+    grid-template-columns:
+    repeat(auto-fit, minmax(180px, 1fr));
+
+    gap: 10px;
+
+    margin: 20px 0;
+}
+
+
+.permissoes label{
+
+    background: #f1f1f1;
+
+    padding: 12px;
+
+    border-radius: 10px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    cursor: pointer;
+}

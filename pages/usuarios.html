@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Usuários
+    </title>
+
+    <link
+    rel="stylesheet"
+    href="../css/dashboard.css">
+
+</head>
+
+<body>
+
+    <header class="topbar">
+
+        <h1>
+            Usuários
+        </h1>
+
+        <a href="dashboard.html">
+
+            Voltar
+
+        </a>
+
+    </header>
+
+
+    <main class="conteudo">
+
+
+        <!-- CADASTRO -->
+
+        <div class="card">
+
+            <h2>
+                Novo Usuário
+            </h2>
+
+
+            <input
+            type="text"
+            id="nome"
+            placeholder="Nome">
+
+
+            <input
+            type="email"
+            id="email"
+            placeholder="Email">
+
+
+            <input
+            type="password"
+            id="senha"
+            placeholder="Senha">
+
+
+            <select id="tipo">
+
+                <option value="funcionario">
+
+                    Funcionário
+
+                </option>
+
+                <option value="admin">
+
+                    Admin
+
+                </option>
+
+            </select>
+
+
+            <h3>
+                Permissões
+            </h3>
+
+
+            <div class="permissoes">
+
+                <label>
+
+                    <input
+                    type="checkbox"
+                    id="pdv">
+
+                    PDV
+
+                </label>
+
+
+                <label>
+
+                    <input
+                    type="checkbox"
+                    id="estoque">
+
+                    Estoque
+
+                </label>
+
+
+                <label>
+
+                    <input
+                    type="checkbox"
+                    id="financeiro">
+
+                    Financeiro
+
+                </label>
+
+
+                <label>
+
+                    <input
+                    type="checkbox"
+                    id="analises">
+
+                    Análises
+
+                </label>
+
+
+                <label>
+
+                    <input
+                    type="checkbox"
+                    id="usuarios">
+
+                    Usuários
+
+                </label>
+
+
+                <label>
+
+                    <input
+                    type="checkbox"
+                    id="configuracoes">
+
+                    Configurações
+
+                </label>
+
+
+                <label>
+
+                    <input
+                    type="checkbox"
+                    id="importacao">
+
+                    Importação
+
+                </label>
+
+            </div>
+
+
+            <button id="btnSalvar">
+
+                Salvar Usuário
+
+            </button>
+
+        </div>
+
+
+        <!-- LISTA -->
+
+        <div class="card">
+
+            <h2>
+                Usuários
+            </h2>
+
+            <div id="listaUsuarios">
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <script
+    type="module"
+    src="../js/usuarios.js">
+
+    </script>
+
+</body>
+</html>
