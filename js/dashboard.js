@@ -9,6 +9,8 @@ import {
 } from "./firebase.js";
 
 
+// ELEMENTOS
+
 const vendasHoje =
 document.getElementById("vendasHoje");
 
@@ -28,116 +30,140 @@ document.getElementById("totalProdutos");
 
 async function carregarDashboard(){
 
-    await carregarVendas();
+    try{
 
-    await carregarProdutos();
-}
+        // =========================
+        // VENDAS
+        // =========================
 
-
-// =========================
-// VENDAS
-// =========================
-
-async function carregarVendas(){
-
-    const querySnapshot =
-    await getDocs(
-        collection(db, "vendas")
-    );
+        const vendasSnapshot =
+        await getDocs(
+            collection(db, "vendas")
+        );
 
 
-    let total = 0;
+        let totalDia = 0;
 
-    let pedidos = 0;
+        let qtdPedidos = 0;
 
-    let produtosVendidos = {};
-
-
-    querySnapshot.forEach((doc) => {
-
-        const venda = doc.data();
+        let produtosVendidos = {};
 
 
-        total += Number(venda.total) || 0;
+        const hoje =
+        new Date().toLocaleDateString();
 
-        pedidos++;
+
+        vendasSnapshot.forEach((docItem) => {
+
+            const venda =
+            docItem.data();
 
 
-        if(venda.itens){
+            const dataVenda =
+            new Date(
+                venda.data
+            ).toLocaleDateString();
 
+
+            // TOTAL HOJE
+            if(dataVenda === hoje){
+
+                totalDia += venda.total;
+
+                qtdPedidos++;
+            }
+
+
+            // PRODUTOS
             venda.itens.forEach((item) => {
 
-                const quantidade =
-                Number(item.quantidade) || 1;
-
-
                 if(
-                    produtosVendidos[item.produto]
+
+                    produtosVendidos[
+                        item.produto
+                    ]
+
                 ){
 
-                    produtosVendidos[item.produto] +=
-                    quantidade;
+                    produtosVendidos[
+                        item.produto
+                    ] += item.quantidade;
 
                 }else{
 
-                    produtosVendidos[item.produto] =
-                    quantidade;
+                    produtosVendidos[
+                        item.produto
+                    ] = item.quantidade;
                 }
             });
+        });
+
+
+        // =========================
+        // MAIS VENDIDO
+        // =========================
+
+        let topProduto =
+        "Nenhum";
+
+        let maior = 0;
+
+
+        for(const produto in produtosVendidos){
+
+            if(
+
+                produtosVendidos[
+                    produto
+                ] > maior
+
+            ){
+
+                maior =
+                produtosVendidos[
+                    produto
+                ];
+
+                topProduto =
+                produto;
+            }
         }
-    });
 
 
-    vendasHoje.innerText =
-    `R$ ${total}`;
+        // =========================
+        // PRODUTOS
+        // =========================
+
+        const produtosSnapshot =
+        await getDocs(
+            collection(db, "produtos")
+        );
 
 
-    pedidosHoje.innerText =
-    pedidos;
+        const qtdProdutos =
+        produtosSnapshot.size;
 
 
-    let produtoTop = "Nenhum";
+        // =========================
+        // ATUALIZA TELA
+        // =========================
 
-    let quantidadeTop = 0;
+        vendasHoje.innerHTML =
+        `R$ ${totalDia}`;
 
+        pedidosHoje.innerHTML =
+        qtdPedidos;
 
-    for(
-        let produto in produtosVendidos
-    ){
+        maisVendido.innerHTML =
+        topProduto;
 
-        if(
-            produtosVendidos[produto]
-            >
-            quantidadeTop
-        ){
+        totalProdutos.innerHTML =
+        qtdProdutos;
 
-            quantidadeTop =
-            produtosVendidos[produto];
+    }catch(error){
 
-            produtoTop = produto;
-        }
+        console.log(error);
     }
-
-
-    maisVendido.innerText =
-    produtoTop;
-}
-
-
-// =========================
-// PRODUTOS
-// =========================
-
-async function carregarProdutos(){
-
-    const querySnapshot =
-    await getDocs(
-        collection(db, "produtos")
-    );
-
-
-    totalProdutos.innerText =
-    querySnapshot.size;
 }
 
 

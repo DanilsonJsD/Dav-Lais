@@ -6,62 +6,102 @@ import {
 
     addDoc,
 
-    getDocs
+    getDocs,
+
+    deleteDoc,
+
+    doc
 
 } from "./firebase.js";
 
 
-const nomeProduto =
-document.getElementById("nomeProduto");
+// ELEMENTOS
 
-const valorProduto =
-document.getElementById("valorProduto");
+const nome =
+document.getElementById("nome");
 
-const categoriaProduto =
-document.getElementById("categoriaProduto");
+const valor =
+document.getElementById("valor");
 
-const imagemProduto =
-document.getElementById("imagemProduto");
+const categoria =
+document.getElementById("categoria");
 
-const btnSalvarProduto =
-document.getElementById("btnSalvarProduto");
+const quantidade =
+document.getElementById("quantidade");
+
+const imagem =
+document.getElementById("imagem");
+
+const btnSalvar =
+document.getElementById("btnSalvar");
 
 const listaProdutos =
 document.getElementById("listaProdutos");
 
 
-btnSalvarProduto.addEventListener(
+// =========================
+// SALVAR
+// =========================
+
+btnSalvar.addEventListener(
+
     "click",
+
     salvarProduto
 );
 
 
 async function salvarProduto(){
 
+    if(
+
+        nome.value === "" ||
+
+        valor.value === ""
+
+    ){
+
+        alert(
+            "Preencha os campos"
+        );
+
+        return;
+    }
+
+
     const produto = {
 
         nome:
-        nomeProduto.value,
+        nome.value,
 
         valor:
-        Number(valorProduto.value),
+        Number(valor.value),
 
         categoria:
-        categoriaProduto.value,
+        categoria.value,
+
+        quantidade:
+        Number(quantidade.value),
 
         imagem:
-        imagemProduto.value
+        imagem.value
     };
 
 
     try{
 
         await addDoc(
+
             collection(db, "produtos"),
+
             produto
         );
 
-        alert("Produto salvo!");
+
+        alert(
+            "Produto salvo!"
+        );
+
 
         limparCampos();
 
@@ -71,74 +111,156 @@ async function salvarProduto(){
 
         console.log(error);
 
-        alert("Erro ao salvar");
+        alert(
+            "Erro salvar produto"
+        );
     }
 }
 
+
+// =========================
+// LISTAR
+// =========================
 
 async function carregarProdutos(){
 
     listaProdutos.innerHTML = "";
 
-    const querySnapshot =
-    await getDocs(
-        collection(db, "produtos")
+
+    try{
+
+        const querySnapshot =
+        await getDocs(
+            collection(db, "produtos")
+        );
+
+
+        querySnapshot.forEach((item) => {
+
+            const produto =
+            item.data();
+
+
+            const div =
+            document.createElement("div");
+
+
+            div.classList.add(
+                "produto-card"
+            );
+
+
+            div.innerHTML = `
+
+                <img
+                src="${produto.imagem}"
+
+                onerror="
+                this.style.display='none'
+                ">
+
+                <h3>
+                    ${produto.nome}
+                </h3>
+
+                <p>
+                    R$ ${produto.valor}
+                </p>
+
+                <small>
+                    ${produto.categoria}
+                </small>
+
+                <br>
+
+                Estoque:
+                ${produto.quantidade}
+
+                <br><br>
+
+                <button
+                onclick="excluirProduto(
+                    '${item.id}'
+                )">
+
+                    Excluir
+
+                </button>
+
+                <hr>
+            `;
+
+
+            listaProdutos.appendChild(div);
+        });
+
+    }catch(error){
+
+        console.log(error);
+    }
+}
+
+
+// =========================
+// EXCLUIR
+// =========================
+
+async function excluirProduto(id){
+
+    const confirmar =
+    confirm(
+
+        "Excluir produto?"
     );
 
 
-    querySnapshot.forEach((doc) => {
+    if(!confirmar){
 
-        const produto = doc.data();
+        return;
+    }
 
-        criarCardProduto(produto);
-    });
+
+    try{
+
+        await deleteDoc(
+
+            doc(db, "produtos", id)
+        );
+
+
+        carregarProdutos();
+
+    }catch(error){
+
+        console.log(error);
+    }
 }
 
 
-function criarCardProduto(produto){
-
-    const card =
-    document.createElement("div");
-
-    card.classList.add("card");
+window.excluirProduto =
+excluirProduto;
 
 
-    card.innerHTML = `
-
-        <img
-        src="${produto.imagem}"
-
-        onerror="this.style.display='none'">
-
-        <h3>
-            ${produto.nome}
-        </h3>
-
-        <p>
-            R$ ${produto.valor}
-        </p>
-
-        <small>
-            ${produto.categoria}
-        </small>
-
-    `;
-
-
-    listaProdutos.appendChild(card);
-}
-
+// =========================
+// LIMPAR
+// =========================
 
 function limparCampos(){
 
-    nomeProduto.value = "";
+    nome.value = "";
 
-    valorProduto.value = "";
+    valor.value = "";
 
-    categoriaProduto.value = "";
+    categoria.value = "";
 
-    imagemProduto.value = "";
+    quantidade.value = "";
+
+    imagem.value = "";
 }
 
+
+// =========================
+// INICIAR
+// =========================
 
 carregarProdutos();

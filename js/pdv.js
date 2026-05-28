@@ -18,12 +18,18 @@ import {
 
     addDoc,
 
-    getDocs
+    getDocs,
+
+    doc,
+
+    updateDoc
 
 } from "./firebase.js";
 
 
+// =========================
 // ELEMENTOS
+// =========================
 
 const listaProdutos =
 document.getElementById("listaProdutos");
@@ -44,7 +50,9 @@ const statusInternet =
 document.getElementById("statusInternet");
 
 
+// =========================
 // VARIÁVEIS
+// =========================
 
 let carrinho = [];
 
@@ -114,7 +122,7 @@ window.addEventListener(
 
 
 // =========================
-// PRODUTOS
+// CARREGAR PRODUTOS
 // =========================
 
 async function carregarProdutos(){
@@ -133,13 +141,26 @@ async function carregarProdutos(){
         let produtos = [];
 
 
-        querySnapshot.forEach((doc) => {
+        querySnapshot.forEach((docItem) => {
 
-            const produto = doc.data();
+            const produto =
+            docItem.data();
 
-            produtos.push(produto);
 
-            criarCardProduto(produto);
+            produtos.push({
+
+                ...produto,
+
+                id: docItem.id
+            });
+
+
+            criarCardProduto({
+
+                ...produto,
+
+                id: docItem.id
+            });
         });
 
 
@@ -153,6 +174,10 @@ async function carregarProdutos(){
     }
 }
 
+
+// =========================
+// OFFLINE PRODUTOS
+// =========================
 
 function carregarProdutosOffline(){
 
@@ -171,7 +196,7 @@ function carregarProdutosOffline(){
 
 
 // =========================
-// CARD
+// CRIAR CARD
 // =========================
 
 function criarCardProduto(produto){
@@ -201,10 +226,16 @@ function criarCardProduto(produto){
             ${produto.categoria}
         </small>
 
+        <br>
+
+        Estoque:
+        ${produto.quantidade}
+
         <br><br>
 
         <button
         onclick="adicionarCarrinho(
+            '${produto.id}',
             '${produto.nome}',
             ${produto.valor}
         )">
@@ -220,10 +251,12 @@ function criarCardProduto(produto){
 
 
 // =========================
-// CARRINHO
+// ADICIONAR CARRINHO
 // =========================
 
 function adicionarCarrinho(
+
+    id,
 
     produto,
 
@@ -245,6 +278,8 @@ function adicionarCarrinho(
 
         carrinho.push({
 
+            id,
+
             produto,
 
             valor,
@@ -257,6 +292,10 @@ function adicionarCarrinho(
     atualizarCarrinho();
 }
 
+
+// =========================
+// ATUALIZAR CARRINHO
+// =========================
 
 function atualizarCarrinho(){
 
@@ -316,6 +355,10 @@ function atualizarCarrinho(){
 }
 
 
+// =========================
+// REMOVER ITEM
+// =========================
+
 function removerItem(index){
 
     if(
@@ -331,6 +374,71 @@ function removerItem(index){
 
 
     atualizarCarrinho();
+}
+
+
+// =========================
+// BAIXAR ESTOQUE
+// =========================
+
+async function baixarEstoque(){
+
+    try{
+
+        for(const item of carrinho){
+
+            const produtoRef = doc(
+
+                db,
+
+                "produtos",
+
+                item.id
+            );
+
+
+            const produtosOffline =
+            obterProdutosOffline();
+
+
+            const produtoAtual =
+            produtosOffline.find(
+
+                (p) => p.id === item.id
+            );
+
+
+            if(produtoAtual){
+
+                const novaQuantidade =
+
+                    produtoAtual.quantidade -
+
+                    item.quantidade;
+
+
+                await updateDoc(
+
+                    produtoRef,
+
+                    {
+
+                        quantidade:
+                        novaQuantidade
+                    }
+                );
+            }
+        }
+
+    }catch(error){
+
+        console.log(
+
+            "Erro baixar estoque",
+
+            error
+        );
+    }
 }
 
 
@@ -376,7 +484,7 @@ async function finalizarVenda(){
     };
 
 
-    // SALVA LOCAL PRIMEIRO
+    // SALVA LOCAL
     salvarVendaOffline(venda);
 
 
@@ -397,7 +505,7 @@ async function finalizarVenda(){
     );
 
 
-    // TENTA SINCRONIZAR
+    // ONLINE
     if(navigator.onLine){
 
         try{
@@ -410,6 +518,12 @@ async function finalizarVenda(){
 
                 addDoc
             );
+
+
+            await baixarEstoque();
+
+
+            carregarProdutos();
 
         }catch(error){
 
