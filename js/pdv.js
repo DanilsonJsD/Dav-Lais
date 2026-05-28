@@ -503,7 +503,7 @@ async function finalizarVenda(){
         "pago",
 
         data:
-        new Date().toLocaleString()
+        Date.now()
     };
 
 

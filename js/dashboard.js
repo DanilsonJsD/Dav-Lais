@@ -12,34 +12,34 @@ import {
 // ELEMENTOS
 
 const vendasHoje =
-document.getElementById("vendasHoje");
+    document.getElementById("vendasHoje");
 
 const pedidosHoje =
-document.getElementById("pedidosHoje");
+    document.getElementById("pedidosHoje");
 
 const maisVendido =
-document.getElementById("maisVendido");
+    document.getElementById("maisVendido");
 
 const totalProdutos =
-document.getElementById("totalProdutos");
+    document.getElementById("totalProdutos");
 
 
 // =========================
 // DASHBOARD
 // =========================
 
-async function carregarDashboard(){
+async function carregarDashboard() {
 
-    try{
+    try {
 
         // =========================
         // VENDAS
         // =========================
 
         const vendasSnapshot =
-        await getDocs(
-            collection(db, "vendas")
-        );
+            await getDocs(
+                collection(db, "vendas")
+            );
 
 
         let totalDia = 0;
@@ -50,41 +50,41 @@ async function carregarDashboard(){
 
 
         const hoje =
-        new Date().toLocaleDateString();
+            new Date().toLocaleDateString();
 
 
         vendasSnapshot.forEach((docItem) => {
 
             const venda =
-            docItem.data();
+                docItem.data();
 
 
             // PROTEÇÃO
             const totalVenda =
-            Number(venda.total) || 0;
+                Number(venda.total) || 0;
 
 
             const itensVenda =
-            venda.itens || [];
+                venda.itens || [];
 
 
             const dataVenda =
 
                 venda.data
 
-                ?
+                    ?
 
-                new Date(
-                    venda.data
-                ).toLocaleDateString()
+                    new Date(
+                        venda.data
+                    ).toLocaleDateString()
 
-                :
+                    :
 
-                "";
+                    "";
 
 
             // TOTAL HOJE
-            if(dataVenda === hoje){
+            if (dataVenda === hoje) {
 
                 totalDia += totalVenda;
 
@@ -96,26 +96,26 @@ async function carregarDashboard(){
             itensVenda.forEach((item) => {
 
                 const nomeProduto =
-                item.produto || "Produto";
+                    item.produto || "Produto";
 
 
                 const quantidade =
-                Number(item.quantidade) || 0;
+                    Number(item.quantidade) || 0;
 
 
-                if(
+                if (
 
                     produtosVendidos[
-                        nomeProduto
+                    nomeProduto
                     ]
 
-                ){
+                ) {
 
                     produtosVendidos[
                         nomeProduto
                     ] += quantidade;
 
-                }else{
+                } else {
 
                     produtosVendidos[
                         nomeProduto
@@ -130,28 +130,28 @@ async function carregarDashboard(){
         // =========================
 
         let topProduto =
-        "Nenhum";
+            "Nenhum";
 
         let maior = 0;
 
 
-        for(const produto in produtosVendidos){
+        for (const produto in produtosVendidos) {
 
-            if(
+            if (
 
                 produtosVendidos[
-                    produto
+                produto
                 ] > maior
 
-            ){
+            ) {
 
                 maior =
-                produtosVendidos[
+                    produtosVendidos[
                     produto
-                ];
+                    ];
 
                 topProduto =
-                produto;
+                    produto;
             }
         }
 
@@ -161,13 +161,13 @@ async function carregarDashboard(){
         // =========================
 
         const produtosSnapshot =
-        await getDocs(
-            collection(db, "produtos")
-        );
+            await getDocs(
+                collection(db, "produtos")
+            );
 
 
         const qtdProdutos =
-        produtosSnapshot.size;
+            produtosSnapshot.size;
 
 
         // =========================
@@ -175,18 +175,18 @@ async function carregarDashboard(){
         // =========================
 
         vendasHoje.innerHTML =
-        `R$ ${totalDia.toFixed(2)}`;
+            `R$ ${totalDia.toFixed(2)}`;
 
         pedidosHoje.innerHTML =
-        qtdPedidos;
+            qtdPedidos;
 
         maisVendido.innerHTML =
-        topProduto;
+            topProduto;
 
         totalProdutos.innerHTML =
-        qtdProdutos;
+            qtdProdutos;
 
-    }catch(error){
+    } catch (error) {
 
         console.log(
 
