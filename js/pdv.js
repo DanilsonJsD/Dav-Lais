@@ -23,9 +23,7 @@ import {
 } from "./firebase.js";
 
 
-// =========================
 // ELEMENTOS
-// =========================
 
 const listaProdutos =
 document.getElementById("listaProdutos");
@@ -42,43 +40,54 @@ document.getElementById("pagamento");
 const btnFinalizar =
 document.getElementById("btnFinalizar");
 
+const statusInternet =
+document.getElementById("statusInternet");
 
-// =========================
+
 // VARIÁVEIS
-// =========================
 
 let carrinho = [];
 
 let total = 0;
 
+let modoOffline = false;
+
 
 // =========================
-// TESTAR INTERNET REAL
+// MONITOR INTERNET
 // =========================
 
-async function temInternet(){
+window.addEventListener("offline", () => {
 
-    try{
+    modoOffline = true;
 
-        await fetch(
+    statusInternet.style.display =
+    "block";
+});
 
-            "https://www.google.com/favicon.ico",
 
-            {
+window.addEventListener("online", async () => {
 
-                mode: "no-cors",
+    modoOffline = false;
 
-                cache: "no-cache"
-            }
-        );
+    statusInternet.style.display =
+    "none";
 
-        return true;
 
-    }catch{
+    await sincronizarVendas(
 
-        return false;
-    }
-}
+        db,
+
+        collection,
+
+        addDoc
+    );
+
+
+    alert(
+        "Vendas sincronizadas!"
+    );
+});
 
 
 // =========================
@@ -92,37 +101,26 @@ async function carregarProdutos(){
 
     try{
 
-        const online =
-        await temInternet();
+        const querySnapshot =
+        await getDocs(
+            collection(db, "produtos")
+        );
 
 
-        if(online){
-
-            const querySnapshot =
-            await getDocs(
-                collection(db, "produtos")
-            );
+        let produtos = [];
 
 
-            let produtos = [];
+        querySnapshot.forEach((doc) => {
+
+            const produto = doc.data();
+
+            produtos.push(produto);
+
+            criarCardProduto(produto);
+        });
 
 
-            querySnapshot.forEach((doc) => {
-
-                const produto = doc.data();
-
-                produtos.push(produto);
-
-                criarCardProduto(produto);
-            });
-
-
-            salvarProdutosOffline(produtos);
-
-        }else{
-
-            carregarProdutosOffline();
-        }
+        salvarProdutosOffline(produtos);
 
     }catch(error){
 
@@ -154,7 +152,7 @@ function carregarProdutosOffline(){
 
 
 // =========================
-// CRIAR CARD
+// CARD
 // =========================
 
 function criarCardProduto(produto){
@@ -320,7 +318,9 @@ function removerItem(index){
 // =========================
 
 btnFinalizar.addEventListener(
+
     "click",
+
     finalizarVenda
 );
 
@@ -333,9 +333,6 @@ async function finalizarVenda(){
 
         return;
     }
-
-
-    btnFinalizar.disabled = true;
 
 
     const venda = {
@@ -359,22 +356,14 @@ async function finalizarVenda(){
 
 
     // =========================
-    // TESTA INTERNET
-    // =========================
-
-    const online = navigator.onLine;
-
-
-    // =========================
     // OFFLINE
     // =========================
 
-    if(!online){
+    if(modoOffline){
 
         salvarVendaOffline(venda);
 
 
-        // LIMPA IMEDIATO
         carrinho = [];
 
         atualizarCarrinho();
@@ -382,12 +371,9 @@ async function finalizarVenda(){
 
         alert(
 
-            "Venda offline realizada.\n\nAo conectar a internet a venda será registrada automaticamente."
+            "Venda salva offline!\n\nQuando a internet voltar ela será sincronizada."
 
         );
-
-
-        btnFinalizar.disabled = false;
 
         return;
     }
@@ -407,7 +393,6 @@ async function finalizarVenda(){
         );
 
 
-        // LIMPA
         carrinho = [];
 
         atualizarCarrinho();
@@ -436,65 +421,7 @@ async function finalizarVenda(){
 
         );
     }
-
-
-    btnFinalizar.disabled = false;
 }
-
-
-// =========================
-// SINCRONIZAR
-// =========================
-
-window.addEventListener(
-
-    "online",
-
-    async () => {
-
-        console.log(
-            "🌐 Conexão de internet restaurada!"
-        );
-
-        try{
-
-            const resultado =
-            await sincronizarVendas(
-
-                db,
-
-                collection,
-
-                addDoc
-            );
-
-
-            if(resultado){
-
-                alert(
-                    "✅ Vendas offline sincronizadas com sucesso!"
-                );
-
-            }else{
-
-                alert(
-                    "ℹ️ Nenhuma venda para sincronizar."
-                );
-            }
-
-        }catch(error){
-
-            console.error(
-                "Erro ao sincronizar:",
-                error
-            );
-
-            alert(
-                "❌ Erro ao sincronizar. Tente novamente."
-            );
-        }
-    }
-);
 
 
 // =========================
