@@ -59,41 +59,67 @@ async function carregarDashboard(){
             docItem.data();
 
 
+            // PROTEÇÃO
+            const totalVenda =
+            Number(venda.total) || 0;
+
+
+            const itensVenda =
+            venda.itens || [];
+
+
             const dataVenda =
-            new Date(
+
                 venda.data
-            ).toLocaleDateString();
+
+                ?
+
+                new Date(
+                    venda.data
+                ).toLocaleDateString()
+
+                :
+
+                "";
 
 
             // TOTAL HOJE
             if(dataVenda === hoje){
 
-                totalDia += venda.total;
+                totalDia += totalVenda;
 
                 qtdPedidos++;
             }
 
 
             // PRODUTOS
-            venda.itens.forEach((item) => {
+            itensVenda.forEach((item) => {
+
+                const nomeProduto =
+                item.produto || "Produto";
+
+
+                const quantidade =
+                Number(item.quantidade) || 0;
+
 
                 if(
 
                     produtosVendidos[
-                        item.produto
+                        nomeProduto
                     ]
 
                 ){
 
                     produtosVendidos[
-                        item.produto
-                    ] += item.quantidade;
+                        nomeProduto
+                    ] += quantidade;
 
                 }else{
 
                     produtosVendidos[
-                        item.produto
-                    ] = item.quantidade;
+                        nomeProduto
+                    ] = quantidade;
                 }
             });
         });
@@ -149,7 +175,7 @@ async function carregarDashboard(){
         // =========================
 
         vendasHoje.innerHTML =
-        `R$ ${totalDia}`;
+        `R$ ${totalDia.toFixed(2)}`;
 
         pedidosHoje.innerHTML =
         qtdPedidos;
@@ -162,7 +188,12 @@ async function carregarDashboard(){
 
     }catch(error){
 
-        console.log(error);
+        console.log(
+
+            "Erro dashboard:",
+
+            error
+        );
     }
 }
 
