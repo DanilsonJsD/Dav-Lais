@@ -203,3 +203,84 @@ async function carregarDashboard() {
 // =========================
 
 carregarDashboard();
+
+// =========================
+// PERMISSÕES MENU
+// =========================
+
+const usuarioLogado = JSON.parse(
+
+    localStorage.getItem(
+        "usuarioLogado"
+    )
+);
+
+
+if(usuarioLogado){
+
+    const permissoes =
+    usuarioLogado.permissoes;
+
+
+    // PDV
+    if(!permissoes.pdv){
+
+        document.getElementById(
+            "menu-pdv"
+        ).style.display = "none";
+    }
+
+
+    // ESTOQUE
+    if(!permissoes.estoque){
+
+        document.getElementById(
+            "menu-estoque"
+        ).style.display = "none";
+    }
+
+
+    // FINANCEIRO
+    if(!permissoes.financeiro){
+
+        document.getElementById(
+            "menu-financeiro"
+        ).style.display = "none";
+    }
+
+
+    // ANALISES
+    if(!permissoes.analises){
+
+        document.getElementById(
+            "menu-analises"
+        ).style.display = "none";
+    }
+
+
+    // USUARIOS
+    if(!permissoes.usuarios){
+
+        document.getElementById(
+            "menu-usuarios"
+        ).style.display = "none";
+    }
+
+
+    // CONFIG
+    if(!permissoes.configuracoes){
+
+        document.getElementById(
+            "menu-configuracoes"
+        ).style.display = "none";
+    }
+
+
+    // IMPORTAÇÃO
+    if(!permissoes.importacao){
+
+        document.getElementById(
+            "menu-importacao"
+        ).style.display = "none";
+    }
+}
