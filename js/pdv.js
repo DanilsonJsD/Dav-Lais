@@ -569,7 +569,7 @@ adicionarCarrinho;
 
 window.removerItem =
 removerItem;
-
+ 
 
 // =========================
 // INICIAR
