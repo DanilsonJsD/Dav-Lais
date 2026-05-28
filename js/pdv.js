@@ -359,76 +359,80 @@ async function finalizarVenda(){
 
 
     // =========================
-    // LIMPA TELA IMEDIATAMENTE
+    // TESTA INTERNET
     // =========================
 
-    carrinho = [];
-
-    atualizarCarrinho();
+    const online = navigator.onLine;
 
 
     // =========================
-    // VERIFICA INTERNET ANTES
+    // OFFLINE
     // =========================
 
-    const online = await temInternet();
-
-    console.log("Tem internet?", online);
-
-
-    // =========================
-    // SE TEM INTERNET, TENTA SALVAR
-    // =========================
-
-    if(online){
-
-        try{
-
-            await addDoc(
-
-                collection(db, "vendas"),
-
-                venda
-            );
-
-            console.log("✅ Venda online salva");
-
-            alert(
-                "✅ Venda finalizada e sincronizada!"
-            );
-
-        }catch(error){
-
-            console.error(
-                "❌ Erro ao salvar online:",
-                error
-            );
-
-            // Se falhar, salva offline
-            salvarVendaOffline(venda);
-
-            alert(
-
-                "⚠️ Venda salva offline.\n\nAo conectar a internet a venda será sincronizada automaticamente."
-
-            );
-        }
-
-    }else{
-
-        // =========================
-        // SEM INTERNET, SALVA OFFLINE
-        // =========================
+    if(!online){
 
         salvarVendaOffline(venda);
 
-        console.log(
-            "📴 Venda salva offline (sem internet)"
-        );
+
+        // LIMPA IMEDIATO
+        carrinho = [];
+
+        atualizarCarrinho();
+
 
         alert(
 
-            "📴 Venda realizada em modo offline!\n\nQuando a internet retornar, a venda será sincronizada automaticamente."
+            "Venda offline realizada.\n\nAo conectar a internet a venda será registrada automaticamente."
+
+        );
+
+
+        btnFinalizar.disabled = false;
+
+        return;
+    }
+
+
+    // =========================
+    // ONLINE
+    // =========================
+
+    try{
+
+        await addDoc(
+
+            collection(db, "vendas"),
+
+            venda
+        );
+
+
+        // LIMPA
+        carrinho = [];
+
+        atualizarCarrinho();
+
+
+        alert(
+            "Venda finalizada!"
+        );
+
+    }catch(error){
+
+        console.log(error);
+
+
+        salvarVendaOffline(venda);
+
+
+        carrinho = [];
+
+        atualizarCarrinho();
+
+
+        alert(
+
+            "Erro conexão.\n\nVenda salva offline."
 
         );
     }
