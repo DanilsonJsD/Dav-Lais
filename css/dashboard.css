@@ -453,7 +453,7 @@ STATUS INTERNET
 
     right: 20px;
 
-    padding: 10px 20px;
+    padding: 12px 20px;
 
     border-radius: 30px;
 
@@ -461,7 +461,12 @@ STATUS INTERNET
 
     font-weight: bold;
 
-    z-index: 999;
+    z-index: 9999;
+
+    background: #dc2626;
+
+    box-shadow:
+    0 5px 15px rgba(0,0,0,0.2);
 }
 
 
