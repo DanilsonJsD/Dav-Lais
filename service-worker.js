@@ -1,77 +1,124 @@
-const CACHE_NAME =
-  "dav-lais-v1";
-
+const CACHE_NAME = "dav-lais-v3";
 
 const urlsToCache = [
 
-  "/",
+    "/",
 
-  "/index.html",
+    "/index.html",
 
-  "/css/login.css",
+    "/pages/dashboard.html",
 
-  "/css/dashboard.css",
+    "/pages/pdv.html",
 
-  "/js/auth.js",
+    "/pages/estoque.html",
 
-  "/js/dashboard.js",
+    "/pages/financeiro.html",
 
-  "/js/estoque.js",
+    "/pages/analises.html",
 
-  "/js/firebase.js",
+    "/css/dashboard.css",
 
-  "/js/pdv.js",
+    "/js/firebase.js",
 
-  "/js/storage.js",
+    "/js/pdv.js",
 
-  "/pages/dashboard.html",
+    "/js/dashboard.js",
 
-  "/pages/pdv.html",
+    "/js/estoque.js",
 
-  "/pages/estoque.html",
-
-  "/pages/financeiro.html",
-
-  "/pages/analises.html"
+    "/js/storage.js"
 ];
 
 
-// INSTALA CACHE
+// =========================
+// INSTALL
+// =========================
+
 self.addEventListener(
-  "install",
-  (event) => {
 
-    event.waitUntil(
+    "install",
 
-      caches.open(CACHE_NAME)
+    (event) => {
 
-        .then((cache) => {
+        event.waitUntil(
 
-          return cache.addAll(
-            urlsToCache
-          );
-        })
-    );
-  }
+            caches.open(CACHE_NAME)
+
+            .then((cache) => {
+
+                return cache.addAll(
+                    urlsToCache
+                );
+            })
+        );
+    }
 );
 
 
-// RESPONDE CACHE
+// =========================
+// FETCH
+// =========================
+
 self.addEventListener(
-  "fetch",
-  (event) => {
 
-    event.respondWith(
+    "fetch",
 
-      caches.match(event.request)
+    (event) => {
 
-        .then((response) => {
+        event.respondWith(
 
-          return (
-            response ||
             fetch(event.request)
-          );
-        })
-    );
-  }
+
+            .then((response) => {
+
+                return response;
+
+            })
+
+            .catch(() => {
+
+                return caches.match(
+                    event.request
+                );
+            })
+        );
+    }
+);
+
+
+// =========================
+// ACTIVATE
+// =========================
+
+self.addEventListener(
+
+    "activate",
+
+    (event) => {
+
+        event.waitUntil(
+
+            caches.keys()
+
+            .then((cacheNames) => {
+
+                return Promise.all(
+
+                    cacheNames.map((cache) => {
+
+                        if(
+
+                            cache !== CACHE_NAME
+
+                        ){
+
+                            return caches.delete(
+                                cache
+                            );
+                        }
+                    })
+                );
+            })
+        );
+    }
 );
