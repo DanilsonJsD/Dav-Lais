@@ -71,7 +71,7 @@ function atualizarStatusInternet(){
         "🟢 ONLINE";
 
         statusInternet.style.background =
-        "green";
+        "#16a34a";
 
     }else{
 
@@ -79,10 +79,14 @@ function atualizarStatusInternet(){
         "🔴 OFFLINE";
 
         statusInternet.style.background =
-        "red";
+        "#dc2626";
     }
 }
 
+
+// =========================
+// EVENTOS INTERNET
+// =========================
 
 window.addEventListener(
 
@@ -92,20 +96,25 @@ window.addEventListener(
 
         atualizarStatusInternet();
 
+        try{
 
-        await sincronizarVendas(
+            await sincronizarVendas(
 
-            db,
+                db,
 
-            collection,
+                collection,
 
-            addDoc
-        );
+                addDoc
+            );
 
+            alert(
+                "Vendas sincronizadas!"
+            );
 
-        alert(
-            "Vendas sincronizadas!"
-        );
+        }catch(error){
+
+            console.log(error);
+        }
     }
 );
 
@@ -117,6 +126,10 @@ window.addEventListener(
     () => {
 
         atualizarStatusInternet();
+
+        alert(
+            "Sistema offline"
+        );
     }
 );
 
@@ -147,20 +160,22 @@ async function carregarProdutos(){
             docItem.data();
 
 
-            produtos.push({
+            const produtoCompleto = {
 
                 ...produto,
 
                 id: docItem.id
-            });
+            };
 
 
-            criarCardProduto({
+            produtos.push(
+                produtoCompleto
+            );
 
-                ...produto,
 
-                id: docItem.id
-            });
+            criarCardProduto(
+                produtoCompleto
+            );
         });
 
 
@@ -168,7 +183,10 @@ async function carregarProdutos(){
 
     }catch(error){
 
-        console.log(error);
+        console.log(
+            "Erro online:",
+            error
+        );
 
         carregarProdutosOffline();
     }
@@ -176,7 +194,7 @@ async function carregarProdutos(){
 
 
 // =========================
-// OFFLINE PRODUTOS
+// PRODUTOS OFFLINE
 // =========================
 
 function carregarProdutosOffline(){
@@ -196,7 +214,7 @@ function carregarProdutosOffline(){
 
 
 // =========================
-// CRIAR CARD
+// CARD PRODUTO
 // =========================
 
 function criarCardProduto(produto){
@@ -205,7 +223,9 @@ function criarCardProduto(produto){
     document.createElement("div");
 
 
-    card.classList.add("card");
+    card.classList.add(
+        "produto-card"
+    );
 
 
     card.innerHTML = `
@@ -229,7 +249,7 @@ function criarCardProduto(produto){
         <br>
 
         Estoque:
-        ${produto.quantidade}
+        ${produto.quantidade || 0}
 
         <br><br>
 
@@ -385,21 +405,11 @@ async function baixarEstoque(){
 
     try{
 
+        const produtosOffline =
+        obterProdutosOffline();
+
+
         for(const item of carrinho){
-
-            const produtoRef = doc(
-
-                db,
-
-                "produtos",
-
-                item.id
-            );
-
-
-            const produtosOffline =
-            obterProdutosOffline();
-
 
             const produtoAtual =
             produtosOffline.find(
@@ -412,14 +422,20 @@ async function baixarEstoque(){
 
                 const novaQuantidade =
 
-                    produtoAtual.quantidade -
+                    (produtoAtual.quantidade || 0)
+
+                    -
 
                     item.quantidade;
 
 
                 await updateDoc(
 
-                    produtoRef,
+                    doc(
+                        db,
+                        "produtos",
+                        item.id
+                    ),
 
                     {
 
@@ -458,7 +474,9 @@ async function finalizarVenda(){
 
     if(carrinho.length <= 0){
 
-        alert("Carrinho vazio");
+        alert(
+            "Carrinho vazio"
+        );
 
         return;
     }
@@ -473,10 +491,15 @@ async function finalizarVenda(){
         pagamento: pagamento.value,
 
         status:
+
         pagamento.value === "fiado"
+
         ?
+
         "pendente"
+
         :
+
         "pago",
 
         data:
@@ -484,25 +507,8 @@ async function finalizarVenda(){
     };
 
 
-    // SALVA LOCAL
+    // SALVAR OFFLINE
     salvarVendaOffline(venda);
-
-
-    // LIMPA TELA
-    carrinho = [];
-
-    atualizarCarrinho();
-
-
-    // ALERTA
-    alert(
-
-        navigator.onLine
-        ?
-        "Venda finalizada!"
-        :
-        "Venda salva offline!"
-    );
 
 
     // ONLINE
@@ -530,6 +536,27 @@ async function finalizarVenda(){
             console.log(error);
         }
     }
+
+
+    // LIMPA CARRINHO
+    carrinho = [];
+
+    atualizarCarrinho();
+
+
+    // ALERTA
+    alert(
+
+        navigator.onLine
+
+        ?
+
+        "Venda finalizada!"
+
+        :
+
+        "Venda salva offline!\nSerá sincronizada quando a internet voltar."
+    );
 }
 
 
