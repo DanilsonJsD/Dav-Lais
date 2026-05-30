@@ -36,6 +36,7 @@ btnLogin.addEventListener(
 
 
 async function login(){
+    console.log("Botão login clicado");
 
     if(
 
