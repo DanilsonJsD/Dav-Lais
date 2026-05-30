@@ -14,10 +14,10 @@ const usuarioLogado = JSON.parse(
 // NÃO LOGADO
 // =========================
 
-if(!usuarioLogado){
+if (!usuarioLogado) {
 
     window.location.href =
-    "login.html";
+        "../index.html";
 }
 
 
@@ -28,21 +28,21 @@ if(!usuarioLogado){
 export function verificarPermissao(
 
     permissao
-){
+) {
 
-    if(
+    if (
 
         !usuarioLogado.permissoes[
-            permissao
+        permissao
         ]
 
-    ){
+    ) {
 
         alert(
             "Sem permissão!"
         );
 
         window.location.href =
-        "dashboard.html";
+            "dashboard.html";
     }
 }

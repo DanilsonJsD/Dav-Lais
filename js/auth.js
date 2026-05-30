@@ -14,13 +14,13 @@ import {
 // =========================
 
 const email =
-document.getElementById("email");
+    document.getElementById("email");
 
 const senha =
-document.getElementById("senha");
+    document.getElementById("senha");
 
 const btnLogin =
-document.getElementById("btnLogin");
+    document.getElementById("btnLogin");
 
 
 // =========================
@@ -35,16 +35,15 @@ btnLogin.addEventListener(
 );
 
 
-async function login(){
-    console.log("Botão login clicado");
+async function login() {
 
-    if(
+    if (
 
         email.value === "" ||
 
         senha.value === ""
 
-    ){
+    ) {
 
         alert(
             "Preencha os campos"
@@ -54,31 +53,31 @@ async function login(){
     }
 
 
-    try{
+    try {
 
         const querySnapshot =
-        await getDocs(
-            collection(db, "usuarios")
-        );
+            await getDocs(
+                collection(db, "usuarios")
+            );
 
 
         let usuarioEncontrado =
-        null;
+            null;
 
 
         querySnapshot.forEach((docItem) => {
 
             const usuario =
-            docItem.data();
+                docItem.data();
 
 
-            if(
+            if (
 
                 usuario.email === email.value &&
 
                 usuario.senha === senha.value
 
-            ){
+            ) {
 
                 usuarioEncontrado = {
 
@@ -90,7 +89,7 @@ async function login(){
         });
 
 
-        if(usuarioEncontrado){
+        if (usuarioEncontrado) {
 
             localStorage.setItem(
 
@@ -103,16 +102,16 @@ async function login(){
 
 
             window.location.href =
-            "dashboard.html";
+                "./pages/dashboard.html";
 
-        }else{
+        } else {
 
             alert(
                 "Email ou senha inválidos"
             );
         }
 
-    }catch(error){
+    } catch (error) {
 
         console.log(error);
 

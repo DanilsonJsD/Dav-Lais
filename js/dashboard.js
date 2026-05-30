@@ -16,10 +16,10 @@ const usuarioLogado = JSON.parse(
 );
 
 
-if(!usuarioLogado){
+if (!usuarioLogado) {
 
     window.location.href =
-    "login.html";
+        "login.html";
 }
 
 import {
@@ -240,14 +240,14 @@ const usuarioLogado = JSON.parse(
 );
 
 
-if(usuarioLogado){
+if (usuarioLogado) {
 
     const permissoes =
-    usuarioLogado.permissoes;
+        usuarioLogado.permissoes;
 
 
     // PDV
-    if(!permissoes.pdv){
+    if (!permissoes.pdv) {
 
         document.getElementById(
             "menu-pdv"
@@ -256,7 +256,7 @@ if(usuarioLogado){
 
 
     // ESTOQUE
-    if(!permissoes.estoque){
+    if (!permissoes.estoque) {
 
         document.getElementById(
             "menu-estoque"
@@ -265,7 +265,7 @@ if(usuarioLogado){
 
 
     // FINANCEIRO
-    if(!permissoes.financeiro){
+    if (!permissoes.financeiro) {
 
         document.getElementById(
             "menu-financeiro"
@@ -274,7 +274,7 @@ if(usuarioLogado){
 
 
     // ANALISES
-    if(!permissoes.analises){
+    if (!permissoes.analises) {
 
         document.getElementById(
             "menu-analises"
@@ -283,7 +283,7 @@ if(usuarioLogado){
 
 
     // USUARIOS
-    if(!permissoes.usuarios){
+    if (!permissoes.usuarios) {
 
         document.getElementById(
             "menu-usuarios"
@@ -292,7 +292,7 @@ if(usuarioLogado){
 
 
     // CONFIG
-    if(!permissoes.configuracoes){
+    if (!permissoes.configuracoes) {
 
         document.getElementById(
             "menu-configuracoes"
@@ -301,7 +301,7 @@ if(usuarioLogado){
 
 
     // IMPORTAÇÃO
-    if(!permissoes.importacao){
+    if (!permissoes.importacao) {
 
         document.getElementById(
             "menu-importacao"
@@ -314,9 +314,9 @@ if(usuarioLogado){
 // =========================
 
 const btnLogout =
-document.getElementById(
-    "btnLogout"
-);
+    document.getElementById(
+        "btnLogout"
+    );
 
 
 btnLogout.addEventListener(
@@ -327,7 +327,7 @@ btnLogout.addEventListener(
 );
 
 
-function logout(){
+function logout() {
 
     localStorage.removeItem(
         "usuarioLogado"
@@ -335,5 +335,5 @@ function logout(){
 
 
     window.location.href =
-    "login.html";
+        "../index.html";
 }
