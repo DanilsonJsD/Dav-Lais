@@ -232,14 +232,6 @@ carregarDashboard();
 // PERMISSÕES MENU
 // =========================
 
-const usuarioLogado = JSON.parse(
-
-    localStorage.getItem(
-        "usuarioLogado"
-    )
-);
-
-
 if (usuarioLogado) {
 
     const permissoes =
@@ -314,26 +306,21 @@ if (usuarioLogado) {
 // =========================
 
 const btnLogout =
-    document.getElementById(
-        "btnLogout"
-    );
+document.getElementById("btnLogout");
 
+console.log(btnLogout);
 
 btnLogout.addEventListener(
-
     "click",
-
     logout
 );
 
-
-function logout() {
+function logout(){
 
     localStorage.removeItem(
         "usuarioLogado"
     );
 
-
     window.location.href =
-        "../index.html";
+    "../index.html";
 }
