@@ -583,6 +583,48 @@ removerItem;
  
 
 // =========================
+// PERMISSÕES MENU
+// =========================
+
+const usuarioLogado = JSON.parse(
+    localStorage.getItem(
+        "usuarioLogado"
+    )
+);
+
+if(usuarioLogado?.permissoes){
+
+    if(!usuarioLogado.permissoes.pdv){
+
+        document
+        .getElementById("menu-pdv")
+        ?.remove();
+    }
+
+    if(!usuarioLogado.permissoes.financeiro){
+
+        document
+        .getElementById("menu-financeiro")
+        ?.remove();
+    }
+
+    if(!usuarioLogado.permissoes.estoque){
+
+        document
+        .getElementById("menu-estoque")
+        ?.remove();
+    }
+
+    if(!usuarioLogado.permissoes.analises){
+
+        document
+        .getElementById("menu-analises")
+        ?.remove();
+    }
+}
+
+
+// =========================
 // INICIAR
 // =========================
 
