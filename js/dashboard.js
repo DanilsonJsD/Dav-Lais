@@ -1,5 +1,29 @@
 import {
 
+    verificarPermissao
+
+} from "./authGuard.js";
+
+// =========================
+// VERIFICAR LOGIN
+// =========================
+
+const usuarioLogado = JSON.parse(
+
+    localStorage.getItem(
+        "usuarioLogado"
+    )
+);
+
+
+if(!usuarioLogado){
+
+    window.location.href =
+    "login.html";
+}
+
+import {
+
     db,
 
     collection,
@@ -283,4 +307,33 @@ if(usuarioLogado){
             "menu-importacao"
         ).style.display = "none";
     }
+}
+
+// =========================
+// LOGOUT
+// =========================
+
+const btnLogout =
+document.getElementById(
+    "btnLogout"
+);
+
+
+btnLogout.addEventListener(
+
+    "click",
+
+    logout
+);
+
+
+function logout(){
+
+    localStorage.removeItem(
+        "usuarioLogado"
+    );
+
+
+    window.location.href =
+    "login.html";
 }
