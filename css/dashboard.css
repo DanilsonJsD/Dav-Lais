@@ -630,3 +630,10 @@ LOGIN
 
     cursor: pointer;
 }
+
+.estoque{
+
+    margin-top: 10px;
+
+    font-weight: bold;
+}

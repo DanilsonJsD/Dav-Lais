@@ -43,22 +43,22 @@ import {
 // =========================
 
 const listaProdutos =
-document.getElementById("listaProdutos");
+    document.getElementById("listaProdutos");
 
 const listaCarrinho =
-document.getElementById("listaCarrinho");
+    document.getElementById("listaCarrinho");
 
 const totalTexto =
-document.getElementById("total");
+    document.getElementById("total");
 
 const pagamento =
-document.getElementById("pagamento");
+    document.getElementById("pagamento");
 
 const btnFinalizar =
-document.getElementById("btnFinalizar");
+    document.getElementById("btnFinalizar");
 
 const statusInternet =
-document.getElementById("statusInternet");
+    document.getElementById("statusInternet");
 
 
 // =========================
@@ -74,23 +74,23 @@ let total = 0;
 // STATUS INTERNET
 // =========================
 
-function atualizarStatusInternet(){
+function atualizarStatusInternet() {
 
-    if(navigator.onLine){
-
-        statusInternet.innerHTML =
-        "🟢 ONLINE";
-
-        statusInternet.style.background =
-        "#16a34a";
-
-    }else{
+    if (navigator.onLine) {
 
         statusInternet.innerHTML =
-        "🔴 OFFLINE";
+            "🟢 ONLINE";
 
         statusInternet.style.background =
-        "#dc2626";
+            "#16a34a";
+
+    } else {
+
+        statusInternet.innerHTML =
+            "🔴 OFFLINE";
+
+        statusInternet.style.background =
+            "#dc2626";
     }
 }
 
@@ -107,7 +107,7 @@ window.addEventListener(
 
         atualizarStatusInternet();
 
-        try{
+        try {
 
             await sincronizarVendas(
 
@@ -122,7 +122,7 @@ window.addEventListener(
                 "Vendas sincronizadas!"
             );
 
-        }catch(error){
+        } catch (error) {
 
             console.log(error);
         }
@@ -149,17 +149,17 @@ window.addEventListener(
 // CARREGAR PRODUTOS
 // =========================
 
-async function carregarProdutos(){
+async function carregarProdutos() {
 
     listaProdutos.innerHTML = "";
 
 
-    try{
+    try {
 
         const querySnapshot =
-        await getDocs(
-            collection(db, "produtos")
-        );
+            await getDocs(
+                collection(db, "produtos")
+            );
 
 
         let produtos = [];
@@ -168,7 +168,7 @@ async function carregarProdutos(){
         querySnapshot.forEach((docItem) => {
 
             const produto =
-            docItem.data();
+                docItem.data();
 
 
             const produtoCompleto = {
@@ -192,7 +192,7 @@ async function carregarProdutos(){
 
         salvarProdutosOffline(produtos);
 
-    }catch(error){
+    } catch (error) {
 
         console.log(
             "Erro online:",
@@ -208,13 +208,13 @@ async function carregarProdutos(){
 // PRODUTOS OFFLINE
 // =========================
 
-function carregarProdutosOffline(){
+function carregarProdutosOffline() {
 
     listaProdutos.innerHTML = "";
 
 
     const produtosOffline =
-    obterProdutosOffline();
+        obterProdutosOffline();
 
 
     produtosOffline.forEach((produto) => {
@@ -228,10 +228,10 @@ function carregarProdutosOffline(){
 // CARD PRODUTO
 // =========================
 
-function criarCardProduto(produto){
+function criarCardProduto(produto) {
 
     const card =
-    document.createElement("div");
+        document.createElement("div");
 
 
     card.classList.add(
@@ -257,12 +257,12 @@ function criarCardProduto(produto){
             ${produto.categoria}
         </small>
 
-        <br>
+        <p class="estoque">
 
-        Estoque:
-        ${produto.quantidade || 0}
+            Estoque:
+            ${produto.quantidade || 0}
 
-        <br><br>
+        </p>
 
         <button
         onclick="adicionarCarrinho(
@@ -286,39 +286,68 @@ function criarCardProduto(produto){
 // =========================
 
 function adicionarCarrinho(
-
     id,
-
     produto,
-
     valor
-){
+) {
+
+    const produtosOffline =
+        obterProdutosOffline();
+
+    const produtoAtual =
+        produtosOffline.find(
+            (p) => p.id === id
+        );
+
+    if (!produtoAtual) {
+
+        alert(
+            "Produto não encontrado"
+        );
+
+        return;
+    }
 
     const itemExistente =
-    carrinho.find((item) =>
+        carrinho.find(
+            (item) =>
+                item.id === id
+        );
 
-        item.produto === produto
-    );
+    const quantidadeNoCarrinho =
 
+        itemExistente
+            ?
+            itemExistente.quantidade
+            :
+            0;
 
-    if(itemExistente){
+    if (
+        quantidadeNoCarrinho >=
+        produtoAtual.quantidade
+    ) {
+
+        alert(
+            "Estoque insuficiente!"
+        );
+
+        return;
+    }
+
+    if (itemExistente) {
 
         itemExistente.quantidade++;
 
-    }else{
+    } else {
 
         carrinho.push({
 
             id,
-
             produto,
-
             valor,
-
             quantidade: 1
         });
     }
-
 
     atualizarCarrinho();
 }
@@ -328,7 +357,7 @@ function adicionarCarrinho(
 // ATUALIZAR CARRINHO
 // =========================
 
-function atualizarCarrinho(){
+function atualizarCarrinho() {
 
     listaCarrinho.innerHTML = "";
 
@@ -338,14 +367,14 @@ function atualizarCarrinho(){
     carrinho.forEach((item, index) => {
 
         const subtotal =
-        item.valor * item.quantidade;
+            item.valor * item.quantidade;
 
 
         total += subtotal;
 
 
         const li =
-        document.createElement("li");
+            document.createElement("li");
 
 
         li.innerHTML = `
@@ -382,7 +411,7 @@ function atualizarCarrinho(){
 
 
     totalTexto.innerHTML =
-    `Total: R$ ${total}`;
+        `Total: R$ ${total}`;
 }
 
 
@@ -390,15 +419,15 @@ function atualizarCarrinho(){
 // REMOVER ITEM
 // =========================
 
-function removerItem(index){
+function removerItem(index) {
 
-    if(
+    if (
         carrinho[index].quantidade > 1
-    ){
+    ) {
 
         carrinho[index].quantidade--;
 
-    }else{
+    } else {
 
         carrinho.splice(index, 1);
     }
@@ -412,32 +441,32 @@ function removerItem(index){
 // BAIXAR ESTOQUE
 // =========================
 
-async function baixarEstoque(){
+async function baixarEstoque() {
 
-    try{
+    try {
 
         const produtosOffline =
-        obterProdutosOffline();
+            obterProdutosOffline();
 
 
-        for(const item of carrinho){
+        for (const item of carrinho) {
 
             const produtoAtual =
-            produtosOffline.find(
+                produtosOffline.find(
 
-                (p) => p.id === item.id
-            );
+                    (p) => p.id === item.id
+                );
 
 
-            if(produtoAtual){
+            if (produtoAtual) {
 
                 const novaQuantidade =
-
-                    (produtoAtual.quantidade || 0)
-
-                    -
-
-                    item.quantidade;
+                    Math.max(
+                        0,
+                        (produtoAtual.quantidade || 0)
+                        -
+                        item.quantidade
+                    );
 
 
                 await updateDoc(
@@ -451,13 +480,13 @@ async function baixarEstoque(){
                     {
 
                         quantidade:
-                        novaQuantidade
+                            novaQuantidade
                     }
                 );
             }
         }
 
-    }catch(error){
+    } catch (error) {
 
         console.log(
 
@@ -481,9 +510,9 @@ btnFinalizar.addEventListener(
 );
 
 
-async function finalizarVenda(){
+async function finalizarVenda() {
 
-    if(carrinho.length <= 0){
+    if (carrinho.length <= 0) {
 
         alert(
             "Carrinho vazio"
@@ -503,18 +532,18 @@ async function finalizarVenda(){
 
         status:
 
-        pagamento.value === "fiado"
+            pagamento.value === "fiado"
 
-        ?
+                ?
 
-        "pendente"
+                "pendente"
 
-        :
+                :
 
-        "pago",
+                "pago",
 
         data:
-        Date.now()
+            Date.now()
     };
 
 
@@ -523,9 +552,9 @@ async function finalizarVenda(){
 
 
     // ONLINE
-    if(navigator.onLine){
+    if (navigator.onLine) {
 
-        try{
+        try {
 
             await sincronizarVendas(
 
@@ -542,7 +571,7 @@ async function finalizarVenda(){
 
             carregarProdutos();
 
-        }catch(error){
+        } catch (error) {
 
             console.log(error);
         }
@@ -560,13 +589,13 @@ async function finalizarVenda(){
 
         navigator.onLine
 
-        ?
+            ?
 
-        "Venda finalizada!"
+            "Venda finalizada!"
 
-        :
+            :
 
-        "Venda salva offline!\nSerá sincronizada quando a internet voltar."
+            "Venda salva offline!\nSerá sincronizada quando a internet voltar."
     );
 }
 
@@ -576,11 +605,11 @@ async function finalizarVenda(){
 // =========================
 
 window.adicionarCarrinho =
-adicionarCarrinho;
+    adicionarCarrinho;
 
 window.removerItem =
-removerItem;
- 
+    removerItem;
+
 
 // =========================
 // PERMISSÕES MENU
@@ -592,34 +621,34 @@ const usuarioLogado = JSON.parse(
     )
 );
 
-if(usuarioLogado?.permissoes){
+if (usuarioLogado?.permissoes) {
 
-    if(!usuarioLogado.permissoes.pdv){
+    if (!usuarioLogado.permissoes.pdv) {
 
         document
-        .getElementById("menu-pdv")
-        ?.remove();
+            .getElementById("menu-pdv")
+            ?.remove();
     }
 
-    if(!usuarioLogado.permissoes.financeiro){
+    if (!usuarioLogado.permissoes.financeiro) {
 
         document
-        .getElementById("menu-financeiro")
-        ?.remove();
+            .getElementById("menu-financeiro")
+            ?.remove();
     }
 
-    if(!usuarioLogado.permissoes.estoque){
+    if (!usuarioLogado.permissoes.estoque) {
 
         document
-        .getElementById("menu-estoque")
-        ?.remove();
+            .getElementById("menu-estoque")
+            ?.remove();
     }
 
-    if(!usuarioLogado.permissoes.analises){
+    if (!usuarioLogado.permissoes.analises) {
 
         document
-        .getElementById("menu-analises")
-        ?.remove();
+            .getElementById("menu-analises")
+            ?.remove();
     }
 }
 
