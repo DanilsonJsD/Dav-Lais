@@ -19,7 +19,7 @@ const usuarioLogado = JSON.parse(
 if (!usuarioLogado) {
 
     window.location.href =
-        "login.html";
+        "../index.html";
 }
 
 import {
